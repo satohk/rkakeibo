@@ -1,0 +1,9 @@
+<% if user_signed_in? %>
+<div class="my-tab-content" style="margin:0px">
+  <div class="tab-pane" id="list-pane"><%=render :partial => 'list'%></div>
+  <div class="tab-pane" id="summary-pane"><%=render :partial => 'summary'%></div>
+  <div class="tab-pane" id="setting-pane"><%=render :partial => 'setting'%></div>
+</div>
+<% else %>
+<%= link_to 'Register', new_user_registration_path %> or <%= link_to 'Sign in', new_user_session_path %>
+<% end %>

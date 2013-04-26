@@ -1,0 +1,171 @@
+
+if(!kakeibo.model){
+	kakeibo.model = {}; // namespace
+}
+
+/*
+ * Category
+ */
+kakeibo.model.Category = function(json){
+	this.m_id = json.id;
+	this.m_is_account = json.is_account;
+	this.m_is_creditor = json.is_creditor;
+	this.m_name = json.name;
+	this.m_parent_id = json.parent_id
+	this.m_parent = kakeibo.model.CategorySet.getById(this.m_parent_id);
+	if(this.m_parent != null){
+		this.m_parent.m_children.push(this);
+	}
+	this.m_shortcut = json.shortcut;
+	this.m_display_order = json.display_order;
+	this.m_children = [];
+}
+
+kakeibo.model.Category.prototype.getId = function(){
+	return this.m_id;
+}
+
+kakeibo.model.Category.prototype.isAccount = function(){
+	return this.m_is_account;
+}
+
+kakeibo.model.Category.prototype.isCreditor = function(){
+	return this.m_is_creditor;
+}
+
+kakeibo.model.Category.prototype.isDebtor = function(){
+	return !this.m_is_creditor;
+}
+
+kakeibo.model.Category.prototype.getName = function(){
+	return this.m_name;
+}
+
+kakeibo.model.Category.prototype.getParentId = function(){
+	return this.m_parent_id;
+}
+
+kakeibo.model.Category.prototype.getShortcut = function(){
+	return this.m_shortcut;
+}
+
+kakeibo.model.Category.prototype.getDisplayOrder = function(){
+	return this.m_display_order;
+}
+
+kakeibo.model.Category.prototype.getParent = function(){
+	return this.m_parent;
+}
+
+kakeibo.model.Category.prototype.getChild = function(i){
+	return this.m_children[i];
+}
+
+kakeibo.model.Category.prototype.getNumChildren = function(){
+	return this.m_children.length;
+}
+
+
+
+/*
+ * CategorySet (singleton class)
+ */
+kakeibo.model.CategorySet = {};
+
+kakeibo.model.CategorySet.init = function(array){
+	this.m_id2category = {};
+	this.m_shortcut2category = {};
+
+	// create root
+	this.m_root = new kakeibo.model.Category({
+		id: 0,
+		is_account: false,
+		is_creditor: false,
+		name: "-",
+		parent_id: -1,
+		display_order: -1
+	});
+	this.m_id2category[0] = this.m_root;
+
+	this.m_creditor_sum = new kakeibo.model.Category({
+		id: "creditor_sum",
+		is_account: false,
+		is_creditor: true,
+		name: "creditor_sum",
+		parent_id: -1,
+		display_order: -1
+	});
+	this.m_id2category[this.m_creditor_sum.getId()] = this.m_creditor_sum;
+
+	this.m_debtor_sum = new kakeibo.model.Category({
+		id: "debtor_sum",
+		is_account: false,
+		is_creditor: false,
+		name: "debtor_sum",
+		parent_id: -1,
+		display_order: -1
+	});
+	this.m_id2category[this.m_debtor_sum.getId()] = this.m_debtor_sum;
+
+	this.m_account_sum = new kakeibo.model.Category({
+		id: "account_sum",
+		is_account: true,
+		is_creditor: false,
+		name: "account_sum",
+		parent_id: -1,
+		display_order: -1
+	});
+	this.m_id2category[this.m_account_sum.getId()] = this.m_account_sum;
+
+	for(var i = 0; i < array.length; i++){
+		var category = new kakeibo.model.Category(array[i]);
+		this.m_id2category[category.getId()] = category;
+		if(category.getShortcut() != "000"){
+			this.m_shortcut2category[category.getShortcut()] = category;
+		}
+		if(category.isAccount() && category.getParentId() == 0){
+			this.m_account_parent = category;
+		}
+	}
+}
+
+kakeibo.model.CategorySet.getById = function(id){
+	var c = this.m_id2category[id];
+	if(c == undefined || c == null){
+		return null;
+	}
+	else{
+		return c;
+	}
+}
+
+kakeibo.model.CategorySet.getByShortcut = function(shortcut){
+	var c = this.m_shortcut2category[shortcut];
+	if(c == undefined || c == null){
+		return null;
+	}
+	else{
+		return c;
+	}
+}
+
+kakeibo.model.CategorySet.getRoot = function(){
+	return this.m_root;
+}
+
+kakeibo.model.CategorySet.getCreditorSum = function(){
+	return this.m_creditor_sum;
+}
+
+kakeibo.model.CategorySet.getDebtorSum = function(){
+	return this.m_debtor_sum;
+}
+
+kakeibo.model.CategorySet.getAccountSum = function(){
+	return this.m_account_sum;
+}
+
+kakeibo.model.CategorySet.getAccountParent = function(){
+	return this.m_account_parent;
+}
+

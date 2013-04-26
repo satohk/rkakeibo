@@ -1,0 +1,105 @@
+<div class="subheader">
+  <div class="container">
+	<div class="row">
+	  <div class="span12">
+		<form class="form-inline" style="margin-bottom:0px">
+		  <div id="summary-pane-subpane-selector" class="btn-group" data-toggle="buttons-radio">
+			<!-- <button id="summary-pane-table-button" class="btn" pane-id="summary-pane-table-subpane"><i class="icon-th"></i></button> -->
+			<!-- <button id="summary-pane-chart-button" class="btn" pane-id="summary-pane-chart-subpane"><i class="icon-align-left"></i></button> -->
+			<button type="button" id="summary-pane-table-button" class="btn" pane_id="summary-pane-table-subpane">テーブル</button>
+			<button type="button" id="summary-pane-chart-button" class="btn" pane_id="summary-pane-chart-subpane">グラフ</button>
+		  </div>
+		  <div class="pull-right">
+			<img id="summary-pane-loading-img" src="/img/loading_big.gif">
+			&nbsp;&nbsp;
+			<div class="btn-group" data-toggle="buttons-radio">
+			  <button type="button" id="summary-pane-month-button" class="btn">月別</button>
+			  <button type="button" id="summary-pane-year-button" class="btn">年別</button>
+			</div>
+			&nbsp;&nbsp;
+			<div class="input-append">
+			  <input type="text" class="input-mini" id="summary-pane-date-input"></input>
+			  <button type="button" id="summary-pane-refresh-button" class="btn"><i class="icon-refresh"></i></button>
+			</div>
+			&nbsp;&nbsp;
+			<button type="button" id="summary-pane-prev-button" class="btn"><i class="icon-arrow-left"></i>&nbsp;前</button>
+			<button type="button" id="summary-pane-next-button" class="btn">次&nbsp;<i class="icon-arrow-right"></i></button>&nbsp;&nbsp;&nbsp;
+		  </div>
+		</form>
+	  </div>
+	  <div class="span1">
+	  </div>
+	</div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+	<div class="span12">
+
+	  <div class="tab-pane" id="summary-pane-table-subpane">
+		<div id="summary-pane-grid-wrapper" class="grid-wrapper">
+		</div>
+	  </div>
+
+	  <div class="tab-pane" id="summary-pane-chart-subpane">
+		<div class="row">
+		  <div class="span2">
+			<ul id="summary-pane-chart-selector" class="nav nav-tabs nav-stacked">
+			  <li><a href="#" chart="DebtorLineChart">支出推移</a></li>
+			  <li><a href="#" chart="DebtorPieChart">支出比率</a></li>
+			  <li><a href="#" chart="CashFlowChart">収支推移</a></li>
+			</ul>
+		  </div>
+		  <div class="span10">
+			<div id="summary-pane-chart">
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+	</div>
+  </div>
+</div>
+
+<div id="summary-pane-caption-budget" style="display:none">
+  予算
+</div>
+
+<div id="summary-pane-caption-remain" style="display:none">
+  予算残
+</div>
+
+<div id="summary-pane-caption-category" style="display:none">
+  項目
+</div>
+
+<div id="summary-pane-caption-account" style="display:none">
+  資産
+</div>
+
+<div id="summary-pane-caption-creditor-sum" style="display:none">
+  <strong class="text-success">
+	収入計
+  </strong>
+</div>
+
+<div id="summary-pane-caption-debtor-sum" style="display:none">
+  <strong class="text-error">
+	支出計
+  </strong>
+</div>
+
+<div id="summary-pane-caption-account-sum" style="display:none">
+  <strong class="text-success">
+	資産合計
+  </strong>
+</div>
+
+<div id="summary-pane-caption-account-total" style="display:none">
+  資産累計
+</div>
+
+<div id="summary-pane-grid-header-format" style="display:none"
+	 format_month="%y年<br>%m月"
+	 format_year="%y年">  
+</div>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rkakeibo</title>
+  <%= stylesheet_link_tag "/css/bootstrap/bootstrap.css" %>
+  <style type="text/css">
+    <!-- body { -->
+    <!-- padding-top: 60px; -->
+    <!-- padding-bottom: 40px; -->
+    <!-- } -->
+    .sidebar-nav {
+    padding: 9px 0;
+    }
+  </style>
+  <!-- <%= stylesheet_link_tag "/css/bootstrap/bootstrap-responsive.css" %> -->
+  <%= stylesheet_link_tag "/css/jNotify.jquery.css" %>
+  <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css" rel="stylesheet" />
+  <%= stylesheet_link_tag "/css/main.css" %>
+  <%= csrf_meta_tags %>
+
+</head>
+<body class="my-body" onload="init()">
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="#">RKakeibo beta </a>
+	  <% if user_signed_in? -%>
+      <div class="btn-group pull-right">
+        <a class="btn dropdown-toggle btn-inverse" data-toggle="dropdown" href="#">
+          <i class="icon-user icon-white"></i> <%= current_user.email %>
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Profile</a></li>
+          <li class="divider"></li>
+          <li><%= link_to 'Sign out', destroy_user_session_path%></li>
+        </ul>
+      </div>
+      <ul class="nav">
+        <li><a href="#" id="navbar-list-pane-selector" pane_id="list-pane" >記入/一覧</a></li>
+        <li><a href="#" id="navbar-summary-pane-selector" pane_id="summary-pane">集計</a></li>
+        <li><a href="#" id="navbar-setting-pane-selector" pane_id="setting-pane">管理</a></li>
+      </ul>
+	  <% end -%>
+    </div>
+  </div>
+</div>
+
+<%= yield %>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+
+<%= javascript_include_tag "/javascripts/libs/bootstrap/bootstrap.js" %>
+
+<% if user_signed_in? -%>
+<%= javascript_include_tag "/javascripts/libs/highcharts.js" %>
+<%= javascript_include_tag "/javascripts/libs/jNotify.jquery.min.js" %>
+
+<%= javascript_include_tag "/javascripts/utils.js" %>
+<%= javascript_include_tag "/javascripts/main.js" %>
+<%= javascript_include_tag "/javascripts/models/request_queue.js" %>
+<%= javascript_include_tag "/javascripts/models/setting.js" %>
+<%= javascript_include_tag "/javascripts/models/category.js" %>
+<%= javascript_include_tag "/javascripts/models/kakeibo_entry.js" %>
+<%= javascript_include_tag "/javascripts/models/summary.js" %>
+<%= javascript_include_tag "/javascripts/controllers/tab_controller.js" %>
+<%= javascript_include_tag "/javascripts/controllers/list_tab_controller.js" %>
+<%= javascript_include_tag "/javascripts/controllers/summary_tab_controller.js" %>
+<%= javascript_include_tag "/javascripts/controllers/setting_tab_controller.js" %>
+<%= javascript_include_tag "/javascripts/controllers/setting_tab_budget_controller.js" %>
+<%= javascript_include_tag "/javascripts/controllers/setting_tab_category_controller.js" %>
+<%= javascript_include_tag "/javascripts/components/category_popover.js" %>
+<%= javascript_include_tag "/javascripts/components/loading_screen.js" %>
+<%= javascript_include_tag "/javascripts/components/grid.js" %>
+<%= javascript_include_tag "/javascripts/components/summary_table_view.js" %>
+<%= javascript_include_tag "/javascripts/components/chart/abstract_chart.js" %>
+<%= javascript_include_tag "/javascripts/components/chart/debtor_line_chart.js" %>
+<%= javascript_include_tag "/javascripts/components/chart/debtor_pie_chart.js" %>
+<%= javascript_include_tag "/javascripts/components/chart/cash_flow_chart.js" %>
+<script type='text/javascript'>
+  function init(){
+  kakeibo.init(<%= @categories_json  %>, <%= @settings_json  %>);
+  }
+</script>
+
+<% else -%>
+
+<script type='text/javascript'>
+  function init(){
+  }
+</script>
+
+<% end -%>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+<div class="subheader">
+  <div class="container">
+	<div class="row">
+	  <div class="span2">
+	  </div>
+	  <div class="span10">
+		<form class="form-inline" style="margin-bottom:0px">
+		  <button type="button" id="list-pane-add-button" class="btn btn-primary"><i class="icon-pencil icon-white"></i>&nbsp;追加</button>
+		  &nbsp;&nbsp;&nbsp;
+		  <div class="input-append">
+			<input type="text" class="input-xlarge" placeholder="検索">
+		  	<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+		  </div>
+		  <strong id="list-pane-title" style="display:none">全て</strong>
+		  <div class="pull-right">
+			<strong id="list-pane-grid-info-str">1-50 of 2000</strong> &nbsp;
+			<button type="button" id="list-pane-prev-page-button" class="btn"><i class="icon-arrow-left"></i>&nbsp;前</button>
+			<button type="button" id="list-pane-next-page-button" class="btn">次&nbsp;<i class="icon-arrow-right"></i></button>
+			&nbsp;&nbsp;&nbsp;
+			<button type="button" id="list-pane-remove-button"class="btn btn-danger"><i class="icon-remove icon-white"></i>&nbsp;削除</button>
+		  </div>
+		</form>
+	  </div>
+	</div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+	<div class="span2">
+	  <ul class="nav nav-tabs nav-stacked">
+		<li><a id="list-pane-all-entries-button" href="#">全て</a></li>
+		<li><a id="list-pane-recent-entries-button" href="#">最近の記入</a></li>
+	  </ul>
+	</div>
+	<div class="span10">
+	  <div id="list-pane-detail-panel" class="detail-panel">
+		<div id="list-pane-detail-panel-content">
+		  <div class="detail-panel-content">
+			<table style="font-size:small">
+			  <tr>
+				<td>
+				  <div class="no-margin control-group">
+					<span id="list-pane-input-date-caption" class="help-inline">日付</span><br>
+					<input id="list-pane-input-date" type="text" class="input-small error"></input><br>
+				  </div>
+				<td>
+				  <div class="no-margin control-group">
+					<span id="list-pane-input-debtor-caption" class="help-inline">借り方</span><br>
+					<input id="list-pane-input-debtor" type="text" class="input-medium"></input>
+				  </div>
+				<td>
+				  <div class="no-margin control-group">
+					<span id="list-pane-input-creditor-caption" class="help-inline">貸し方</span><br>
+					<input id="list-pane-input-creditor" type="text" class="input-medium"></input>
+				  </div>
+				<td>
+				  <div class="no-margin control-group">
+					<span id="list-pane-input-amount-caption" class="help-inline">金額</span><br>
+					<input id="list-pane-input-amount" type="text" class="input-small" style="text-align:right"></input>
+				  </div>
+				<td>
+				  <div class="no-margin control-group">
+					<span id="list-pane-input-memo-caption" class="help-inline">メモ</span><br>
+					<input id="list-pane-input-memo" type="text" class="input-medium"></input>
+				  </div>
+			  </tr>
+			  <tr>
+				<td><td><td><td>
+				<td class="pull-right">
+				  <button type="button" id="list-pane-detail-panel-close-button" class="btn btn-small">閉じる</button>
+				  <button type="button" id="list-pane-modify-submit-button" class="btn btn-small btn-success">更新</button>
+				  <button type="button" id="list-pane-add-submit-button" class="btn btn-small btn-primary">追加</button>
+			</table>
+		  </div>
+		</div>
+	  </div>
+
+	  <div id="list-pane-grid-wrapper" class="grid-wrapper">
+	  </div>
+	</div>
+  </div>
+</div>
+
+
+<div id="list-pane-msg-remove" style="display:none"      msg="%d個のエントリーを削除します"> </div>
+<div id="list-pane-msg-input-error" style="display:none" msg="入力エラー"></div>

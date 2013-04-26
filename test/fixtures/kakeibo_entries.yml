@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+# one:
+#   debtor_id: 1
+#   debtor_sub_id: 1
+#   creditor_id: 1
+#   creditor_sub_id: 1
+#   amount: 1
+#   transaction_date: 2012-09-22
+
+# two:
+#   debtor_id: 1
+#   debtor_sub_id: 1
+#   creditor_id: 1
+#   creditor_sub_id: 1
+#   amount: 1
+#   transaction_date: 2012-09-22

@@ -1,0 +1,230 @@
+<div class="subheader">
+  <div class="container">
+	<div class="row">
+      <div class="span2">
+	  </div>
+      <div class="span10">
+		<form class="form-inline" style="margin-bottom:0px">
+		  <button type="button" class="btn btn-primary" id="setting-pane-submit"><i class="icon-ok icon-white"></i>&nbsp;保存</button>
+		  &nbsp;
+		  <button type="button" class="btn" id="setting-pane-cancel">元に戻す</button>
+		</form>
+	  </div>
+	</div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="span2">
+	  <ul id="setting-pane-sidebar" class="nav nav-tabs nav-stacked">
+		<li><a id="setting-pane-view-selector" pane_id="setting-pane-view" href="#">表示設定</a></li>
+		<li><a id="setting-pane-csv-selector" pane_id="setting-pane-csv" href="#">ファイル入出力</a></li>
+		<li><a id="setting-pane-category-selector" pane_id="setting-pane-category" href="#">科目設定</a></li>
+		<!-- <li><a id="setting-pane-category-modify-selector" pane_id="setting-pane-category-modify" href="#">科目振替</a></li> -->
+		<li><a id="setting-pane-budget-selector" pane_id="setting-pane-budget" href="#">予算設定</a></li>
+      </ul>
+    </div>
+	<div class="span10">
+	  <div id="setting-pane-view" class="tab-pane">
+		<!-- <h4>表示設定</h4> -->
+		<!-- <hr> -->
+		<form class="form-horizontal">
+		  <div class="control-group">
+			<label class="control-label" for="setting-pane-select-num-grid-row">一覧の行数</label>
+			<div class="controls">
+			  <select class="span2" id="setting-pane-select-num-grid-row">
+				<% for val in 1..50 %>
+				<option><%= val %></option>
+				<% end %>
+			  </select>
+			</div>
+		  </div>
+		  <div class="control-group">
+			<label class="control-label" for="setting-pane-select-num-summary-col">集計表の列数</label>
+			<div class="controls">
+			  <select class="span2" id="setting-pane-select-num-summary-col">
+				<% for val in 1..12 %>
+				<option><%= val %></option>
+				<% end %>
+			  </select>
+			</div>
+		  </div>
+		  <!-- <div class="control-group"> -->
+		  <!-- 	<div class="controls"> -->
+		  <!-- 	  <button type="button" class="btn btn-primary" id="setting-pane-view-submit">変更</button> -->
+		  <!-- 	  <button type="button" class="btn" id="setting-pane-view-cancel">元に戻す</button> -->
+		  <!-- 	</div> -->
+		  <!-- </div> -->
+		</form>
+		<!-- <hr> -->
+		<!-- <form class="form-inline"> -->
+		<!--   <button type="button" class="btn btn-primary" id="setting-pane-view-submit">変更</button> -->
+		<!--   <button type="button" class="btn" id="setting-pane-view-cancel">元に戻す</button> -->
+		<!-- </form> -->
+	  </div>
+	  <div id="setting-pane-csv" class="tab-pane">
+		<!-- <h4>ファイル入出力</h4> -->
+		<!-- <hr> -->
+		<form target="frame" action="kakeibo/import/1" enctype="multipart/form-data" method="post">
+		  <input type="file" name="file"/>
+		  <input type="submit"/>
+		  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+		</form>
+		<iframe id='frame' name="frame" style="display:none"></iframe> <!-- ← Upload用ダミーIframe -->
+	  </div>
+
+	  <div id="setting-pane-category" class="tab-pane">
+		<!-- <h4>科目設定</h4> -->
+		<!-- <hr> -->
+		<!-- <form class="form-inline"> -->
+		<!--   <button type="button" class="btn btn-primary" id="setting-pane-category-submit">登録</button> -->
+		<!--   <button type="button" class="btn" id="setting-pane-category-cancel">元に戻す</button> -->
+		<!-- </form> -->
+		<!-- <hr> -->
+
+		<div class="row">
+		  <div class="span3">
+			<strong>大分類</strong><br>
+			<select id="setting-pane-category-select" size="10" style="width:100%"></select>
+		  </div>
+		  <div class="span3">
+			<strong>小分類</strong><br>
+			<select id="setting-pane-subcategory-select" size="10" style="width:100%"></select>
+		  </div>
+		</div>
+
+		<hr>
+
+		<form class="form-horizontal">
+		  <div class="control-group">
+		  	<label class="control-label">並び順</label>
+		  	<div class="controls">
+		  	  <button id="setting-pane-category-up-button" class="btn btn-small" type="button">上に移動</button>
+		  	  <button id="setting-pane-category-down-button" class="btn btn-small" type="button">下に移動</button>
+		  	</div>
+		  </div>
+		  <div class="control-group">
+			<label class="control-label">名前</label>
+			<div class="controls">
+			  <input type="text" class="input" id="setting-pane-category-name-input">
+			</div>
+		  </div>
+		  <div class="control-group">
+			<label class="control-label">親科目</label>
+			<div class="controls">
+			  <select id="setting-pane-category-parent-select"></select>
+			</div>
+		  </div>
+		  <div class="control-group">
+			<label class="control-label">ショートカット</label>
+			<div class="controls">
+			  <input type="text" class="input" id="setting-pane-category-shortcut-input">
+			</div>
+		  </div>
+		  <div id="setting-pane-category-type" class="control-group">
+			<label class="control-label">種類</label>
+			<div class="controls">
+			  <label class="radio">
+				<input type="radio" name="CategoryTypeSelector" id="setting-pane-category-type-creditor" value="creditor" checked>
+				貸し方科目
+			  </label>
+			  <label class="radio">
+				<input type="radio" name="CategoryTypeSelector" id="setting-pane-category-type-debtor" value="debtor">
+				借り方科目
+			  </label>
+			  <label class="radio">
+				<input type="radio" name="CategoryTypeSelector" id="setting-pane-category-type-account" value="account">
+				口座
+			  </label>
+			</div>
+		  </div>
+		  <div class="control-group">
+			<div class="controls">
+			  <button id="setting-pane-category-modify-button" class="btn btn-small" type="button">更新</button>
+			  <button id="setting-pane-category-add-button" class="btn btn-small" type="button">追加</button>
+			  <button id="setting-pane-category-remove-button" class="btn btn-small btn-danger" type="button">削除</button>
+			</div>
+		  </div>
+		  <hr>
+		</form>
+	  </div>
+
+	  <!-- <div id="setting-pane-category-modify" class="tab-pane"> -->
+	  <!-- </div> -->
+
+	  <div id="setting-pane-budget" class="tab-pane">
+		<form class="form-inline">
+		  <button type="button" class="btn" id="setting-pane-budget-copy">先月予算をコピー</button>
+		  &nbsp;&nbsp;
+		  <div class="input-append">
+			<input type="text" class="input-mini" id="setting-pane-budget-date-input"></input>
+			<button type="button" id="setting-pane-budget-date-refresh-button" class="btn"><i class="icon-refresh"></i></button>
+		  </div>
+		  &nbsp;&nbsp;
+		  <img id="setting-pane-budget-loading-img" src="/img/loading_big.gif">
+		</form>
+
+		<table class="table table-bordered table-striped">
+		  <thead id="setting-pane-budget-thead">
+			<tr>
+			  <th width="25%">項目</th>
+			  <th width="25%" template="%y年%m月予算"></th>
+			  <th width="25%" template="%y年%m月実績"></th>
+			  <th width="25%" template="%y年%m月予算"></th>
+			</tr>
+		  </thead>
+		  <tbody id="setting-pane-budget-tbody">
+			<tr id="setting-pane-budget-row-template" style="display:none">
+			  <td width="25%"></td>
+			  <td width="25%"></td>
+			  <td width="25%"></td>
+			  <td width="25%"><input type="text" class="input-small" style="text-align:right; margin:0px; width:80%"></td>
+			</tr>
+		  </tbody>
+		</table>
+	  </div>
+
+	</div>
+  </div>
+</div>
+
+<div id="setting-pane-category-remove-modal" class="modal hide">
+  <!-- <div class="modal-header"> -->
+  <!--   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
+  <!--   <h3>test</h3> -->
+  <!-- </div> -->
+  <div class="modal-body">
+    <p>削除する科目のエントリの振替先を選択してください</p>
+	<select id="setting-pane-category-remove-modal-select">
+	</select>
+  </div>
+  <div class="modal-footer">
+    <a id="setting-pane-category-remove-modal-cancel" href="#" class="btn">キャンセル</a>
+    <a id="setting-pane-category-remove-modal-submit" href="#" class="btn btn-primary">決定</a>
+  </div>
+</div>
+
+<div id="setting-pane-msg-setting-changed" style="display:none">
+  設定を変更しました
+</div>
+<div id="setting-pane-msg-category-shortcut-duplicated" style="display:none">
+  ショートカットは既に使われています
+</div>
+<div id="setting-pane-msg-category-exist-subcategory" style="display:none">
+  子科目が存在します。先に子科目をすべて削除してください。
+</div>
+<div id="setting-pane-msg-category-invalid-input" style="display:none">
+  不正な入力
+</div>
+<div id="setting-pane-msg-category-invalid-account-creditor-num" style="display:none">
+  貸し方、口座の親科目数は1にしてください。
+</div>
+<div id="setting-pane-msg-category-success-update" style="display:none">
+  科目を変更しました。<br>
+  ページを再ロードします。
+</div>
+<div id="setting-pane-msg-budget-success-update" style="display:none">
+  予算を変更しました。
+</div>
+
+<div id="setting-pane-msg-input-error" style="display:none" msg="入力エラー"></div>
