@@ -41,10 +41,10 @@ Rkakeibo::Application.configure do
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
     :authentication => :plain,
-    :address => ENV['MAILGUN_SMTP_SERVER'],
-    :port => ENV['MAILGUN_SMTP_PORT'],
-    :user_name => ENV['MAILGUN_SMTP_LOGIN'],
-    :password => ENV['MAILGUN_SMTP_PASSWORD'],
-    :domain => ENV['rkakeibo.mailgun.org']
+    :address => ENV['MAILGUN_SMTP_SERVER'] || "dummy@dummy.com",
+    :port => ENV['MAILGUN_SMTP_PORT'] || "12345",
+    :user_name => ENV['MAILGUN_SMTP_LOGIN'] || "dummy-user",
+    :password => ENV['MAILGUN_SMTP_PASSWORD'] || "hogehoge",
+    :domain => ENV['rkakeibo.mailgun.org'] || "hogehoge.org"
   }
 end

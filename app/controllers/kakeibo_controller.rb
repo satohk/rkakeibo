@@ -15,7 +15,7 @@ class KakeiboController < ApplicationController
                                                :creditor_sub_id => data["creditor_sub_id"],
                                                :debtor_id => data["debtor_id"],
                                                :debtor_sub_id => data["debtor_sub_id"],
-                                               :transaction_date => conv_date(data["transaction_date"]),
+                                               :transaction_date => KakeiboEntry.conv_date(data["transaction_date"]),
                                                :memo => data["memo"]
                                                )
       if entry != nil
@@ -53,7 +53,7 @@ class KakeiboController < ApplicationController
                           :creditor_sub_id => data["creditor_sub_id"],
                           :debtor_id => data["debtor_id"],
                           :debtor_sub_id => data["debtor_sub_id"],
-                          :transaction_date => conv_date(data["transaction_date"]),
+                          :transaction_date => KakeiboEntry.conv_date(data["transaction_date"]),
                           :memo => data["memo"]
                           )
       if entry != nil
@@ -116,43 +116,44 @@ class KakeiboController < ApplicationController
       data = ActiveSupport::JSON.decode(params[:json])
       offset = data["offset"]
       limit = data["limit"]
-      
-      rows = KakeiboEntry.find(:all,
-                               :select=>'*',
-                               :conditions=>"",
-                               :order=>"transaction_date desc",
-                               :limit=>limit,
-                               :offset=>offset)
+      option = data["option"]
 
-      #rows = KakeiboEntry.where(:user_id => current_user.id).order('transaction_date desc').limit(limit).offset(offset)
-      rows.map! do |val|
-        {
-          :id => val.id,
-          :amount => val.amount,
-          :creditor_id => val.creditor_id,
-          :creditor_sub_id => val.creditor_sub_id,
-          :debtor_id => val.debtor_id,
-          :debtor_sub_id => val.debtor_sub_id,
-          :transaction_date => val.transaction_date.strftime("%Y/%m/%d"),
-          :memo => val.memo
+      logger.debug option
+      
+#       rows = KakeiboEntry.find(:all,
+#                                :select=>'*',
+#                                :conditions=>"",
+#                                :order=>"transaction_date desc",
+#                                :limit=>limit,
+#                                :offset=>offset)
+
+      condition = KakeiboEntry.conv_option_array2condition_str(option, current_user.id)
+      rows = KakeiboEntry.find_with_option_array(offset, limit, condition, "transaction_date desc")
+
+      p "rows="
+      p rows
+
+      if rows != nil
+        result = {
+          :type => "success",
+          :offset => offset,
+          :limit => rows.size,
+          :rows => rows
         }
-      end
 
-      result = {
-        :type => "success",
-        :offset => offset,
-        :limit => rows.size,
-        :rows => rows
-      }
-
-      if data["req_all_ct"].to_i == 1
-        result[:all_ct] = KakeiboEntry.count_by_sql("select count(id) from kakeibo_entries where user_id = #{current_user.id}")
-      end
+        if data["req_all_ct"].to_i == 1
+          result[:all_ct] = KakeiboEntry.count_by_sql("select count(id) from kakeibo_entries where " + condition)
+        end
       
-      # test wait
-      sleep 2
+        # test wait
+        sleep 2
 
-      render :json => result.to_json.html_safe, :content_type => 'applicaton/json'
+        render :json => result.to_json.html_safe, :content_type => 'applicaton/json'
+      else
+        logger.debug "Error: param error" 
+        result = {:type => "error", :msg => "param error"}
+        render :json => result.to_json.html_safe, :content_type => 'applicaton/json'
+      end
     else
       logger.debug "Error: not logged in" 
       result = {:type => "error", :msg => "not logged in"}
@@ -288,11 +289,5 @@ class KakeiboController < ApplicationController
     logger.debug "SLEEP 2s"
     sleep 2
     render :nothing => true, :status => 200, :content_type => 'text/html'
-  end
-
-  
-  def conv_date(str)
-    year, month, day = str.split("/").map{|v| v.to_i}
-    return DateTime.new(year, month, day, 0, 0, 0, 0)
   end
 end

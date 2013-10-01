@@ -96,7 +96,7 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 			'<td width="20"> ' + (has_child ? '<i class="icon-chevron-right clickable">' : '') + '</i> </td>' +
 			'<td width="100">' + cap + '</td>';
 		for(var i = 0; i < num_col; i++){
-			buf += '<td width="100" class="clickable" searchable> - </td>';
+			buf += '<td width="100" class="clickable" col="' + i + '" searchable> - </td>';
 		}
 		buf += '<td width="100"></td>' +
 			'<td width="100"></td>' +
@@ -165,9 +165,14 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 	{
 		var $table = $("#summary-table");
 		var $searchable = $table.find("[searchable]");
+		var self = this;
 
 		$searchable.click(function(e){
-			console.log(e.target);
+			var $col = $(e.target).closest("td");
+			var col_no = $col.attr("col");
+			var category_id = $col.closest("tr").attr("category-id");
+			var date = kakeibo.utils.calcSummaryColDate(self.m_params.date, -(self.m_params.num_col - 1 - col_no));
+			console.log("col:" + col_no + "  category:" + category_id + "  year:" + date.year + "  month:" + date.month);
 		})
 	}
 }

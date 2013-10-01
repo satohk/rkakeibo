@@ -25,8 +25,8 @@ production:
   database: rkakeibo
   pool: 5
   timeout: 5000
-  username: <%= ENV['VCAP_SERVICES']['mysql-5.1'][0]['credentials']['username'] %>
-  password: <%= ENV['VCAP_SERVICES']['mysql-5.1'][0]['credentials']['password'] %>
-  host: <%= ENV['VCAP_SERVICES']['mysql-5.1'][0]['credentials']['host'] %>
-  port: <%= ENV['VCAP_SERVICES']['mysql-5.1'][0]['credentials']['port'] %>
+  username: <%= ENV['VCAP_SERVICES'] ? ENV['VCAP_SERVICES']['mysql-5.1'][0]['credentials']['username'] : "" %>
+  password: <%= ENV['VCAP_SERVICES'] ? ENV['VCAP_SERVICES']['mysql-5.1'][0]['credentials']['password'] : "" %>
+  host: <%= ENV['VCAP_SERVICES'] ? ENV['VCAP_SERVICES']['mysql-5.1'][0]['credentials']['host'] : "" %>
+  port: <%= ENV['VCAP_SERVICES'] ? ENV['VCAP_SERVICES']['mysql-5.1'][0]['credentials']['port'] : "" %>
 

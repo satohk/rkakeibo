@@ -229,7 +229,6 @@ kakeibo.controller.SettingTabCategoryController.prototype.getAttrHash = function
 	var result = {};
 
 	if(this.m_active_category.isParent()){
-		result.shortcut = "000";
 		result.parent_id = 0;
 		result.parent = this.m_working_category_set.getById(result.parent_id);
 		result.is_account = $("#setting-pane-category-type-account").attr("checked") == "checked";
@@ -238,11 +237,11 @@ kakeibo.controller.SettingTabCategoryController.prototype.getAttrHash = function
 	else{
 		result.parent_id = parseInt($("#setting-pane-category-parent-select option:selected").val());
 		result.parent = this.m_working_category_set.getById(result.parent_id);
-		result.shortcut = $("#setting-pane-category-shortcut-input").val();
 		result.is_account = result.parent.isAccount();
 		result.is_creditor = result.parent.isCreditor();
 	}
 	result.name = $("#setting-pane-category-name-input").val();
+	result.shortcut = $("#setting-pane-category-shortcut-input").val();
 
 	return result;
 }
@@ -328,15 +327,16 @@ kakeibo.controller.SettingTabCategoryController.prototype.changeActiveCategory =
 		$("#setting-pane-category-type-creditor").attr("checked", true);
 	}
 
+	$shortcut.val(category.getShortcut());
+
 	if(category.isParent()){
-		$shortcut.parent().parent().hide();
+// 		$shortcut.parent().parent().hide();
 		$parent.parent().parent().hide();
 		$type.show();
 	}
 	else{
-		$shortcut.val(category.getShortcut());
 		$parent.val(category.getParent().getId());
-		$shortcut.parent().parent().show();
+// 		$shortcut.parent().parent().show();
 		$parent.parent().parent().show();
 		$type.hide();
 	}

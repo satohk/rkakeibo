@@ -113,4 +113,72 @@ class KakeiboEntry < ActiveRecord::Base
     logger.debug e
     return false
   end
+
+
+  def KakeiboEntry.find_with_option_array(offset, limit, condition, order)
+    rows = KakeiboEntry.find(:all,
+                             :select=>'*',
+                             :conditions=>condition,
+                             :order=>order,
+                             :limit=>limit,
+                             :offset=>offset)
+
+    rows.map! do |val|
+      {
+        :id => val.id,
+        :amount => val.amount,
+        :creditor_id => val.creditor_id,
+        :creditor_sub_id => val.creditor_sub_id,
+        :debtor_id => val.debtor_id,
+        :debtor_sub_id => val.debtor_sub_id,
+        :transaction_date => val.transaction_date.strftime("%Y/%m/%d"),
+        :memo => val.memo
+      }
+    end
+
+    return rows
+  end
+
+
+  def KakeiboEntry.conv_option_array2condition_str(option, user_id)
+    condition = "user_id = #{user_id} "
+
+    if not option.kind_of?(Array)
+      return nil
+    end
+
+    option.each do |term|
+      if not term.kind_of?(Array) or term.length != 3
+        return nil
+      end
+
+      lhs = term[0]
+      op = term[1]
+      rhs = term[2]
+
+      if lhs == "transaction_date"
+        rhs = '"' + term[2].gsub('/', '-') + '"'
+      elsif lhs == "memo"
+        rhs = '"' + rhs + '"'
+      else
+        rhs = rhs.to_s
+      end
+
+      if not (op == "=" or op == "<" or op == ">" or op == "<=" or op == ">=" or op == "<>" or op == "like")
+        return null
+      end
+
+      condition += " and " + lhs + " " + op + " " + rhs      
+    end
+
+    logger.debug condition
+
+    return condition
+  end
+
+
+  def KakeiboEntry.conv_date(str)
+    year, month, day = str.split("/").map{|v| v.to_i}
+    return DateTime.new(year, month, day, 0, 0, 0, 0)
+  end
 end

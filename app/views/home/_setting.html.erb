@@ -116,7 +116,7 @@
 			</div>
 		  </div>
 		  <div class="control-group">
-			<label class="control-label">ショートカット</label>
+			<label class="control-label">科目コード</label>
 			<div class="controls">
 			  <input type="text" class="input" id="setting-pane-category-shortcut-input">
 			</div>
@@ -126,15 +126,15 @@
 			<div class="controls">
 			  <label class="radio">
 				<input type="radio" name="CategoryTypeSelector" id="setting-pane-category-type-creditor" value="creditor" checked>
-				貸し方科目
+				支出（借り方科目）
 			  </label>
 			  <label class="radio">
 				<input type="radio" name="CategoryTypeSelector" id="setting-pane-category-type-debtor" value="debtor">
-				借り方科目
+				収入（貸し方科目）
 			  </label>
 			  <label class="radio">
 				<input type="radio" name="CategoryTypeSelector" id="setting-pane-category-type-account" value="account">
-				口座
+				資産（借り方科目）
 			  </label>
 			</div>
 		  </div>
@@ -208,7 +208,7 @@
   設定を変更しました
 </div>
 <div id="setting-pane-msg-category-shortcut-duplicated" style="display:none">
-  ショートカットは既に使われています
+  科目コードが重複しています
 </div>
 <div id="setting-pane-msg-category-exist-subcategory" style="display:none">
   子科目が存在します。先に子科目をすべて削除してください。

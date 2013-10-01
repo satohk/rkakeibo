@@ -6,12 +6,10 @@
 	  <div class="span10">
 		<form class="form-inline" style="margin-bottom:0px">
 		  <button type="button" id="list-pane-add-button" class="btn btn-primary"><i class="icon-pencil icon-white"></i>&nbsp;追加</button>
+		  &nbsp;
+		  <button type="button" id="list-pane-search-button" class="btn"><i class="icon-search"></i>&nbsp;検索</button>
 		  &nbsp;&nbsp;&nbsp;
-		  <div class="input-append">
-			<input type="text" class="input-xlarge" placeholder="検索">
-		  	<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-		  </div>
-		  <strong id="list-pane-title" style="display:none">全て</strong>
+		  <strong id="list-pane-title"></strong>
 		  <div class="pull-right">
 			<strong id="list-pane-grid-info-str">1-50 of 2000</strong> &nbsp;
 			<button type="button" id="list-pane-prev-page-button" class="btn"><i class="icon-arrow-left"></i>&nbsp;前</button>
@@ -27,9 +25,10 @@
 <div class="container">
   <div class="row">
 	<div class="span2">
-	  <ul class="nav nav-tabs nav-stacked">
+	  <ul id="list-pane-entries-button-container" class="nav nav-tabs nav-stacked">
 		<li><a id="list-pane-all-entries-button" href="#">全て</a></li>
 		<li><a id="list-pane-recent-entries-button" href="#">最近の記入</a></li>
+		<li style="display:none"><a id="list-pane-search-entries-button-template" href="#">検索結果 %n</a></li>
 	  </ul>
 	</div>
 	<div class="span10">
@@ -70,6 +69,53 @@
 				  <button type="button" id="list-pane-detail-panel-close-button" class="btn btn-small">閉じる</button>
 				  <button type="button" id="list-pane-modify-submit-button" class="btn btn-small btn-success">更新</button>
 				  <button type="button" id="list-pane-add-submit-button" class="btn btn-small btn-primary">追加</button>
+			</table>
+		  </div>
+		</div>
+	  </div>
+
+	  <div id="list-pane-search-panel" class="detail-panel">
+		<div id="list-pane-search-panel-content">
+		  <div class="detail-panel-content">
+			<table style="font-size:small">
+			  <tr>
+				<td style="vertical-align:top">
+				  <div class="no-margin control-group">
+					<span id="list-pane-search-start-date-caption" class="help-inline">日付</span><br>
+					<input id="list-pane-search-start-date" type="text" class="input-small" placeholder="初日"></input><br>
+					<input id="list-pane-search-end-date" type="text" class="input-small" placeholder="終日"></input><br>
+				  </div>
+				<td style="vertical-align:top">
+				  <div class="no-margin control-group">
+					<span id="list-pane-search-debtor-caption" class="help-inline">借り方</span><br>
+					<input id="list-pane-search-debtor" type="text" class="input-medium"></input>
+				  </div>
+				<td style="vertical-align:top">
+				  <div class="no-margin control-group">
+					<span id="list-pane-search-creditor-caption" class="help-inline">貸し方</span><br>
+					<input id="list-pane-search-creditor" type="text" class="input-medium"></input>
+				  </div>
+				<td style="vertical-align:top">
+				  <div class="no-margin control-group">
+					<span id="list-pane-search-amount-low-caption" class="help-inline">金額</span><br>
+					<input id="list-pane-search-amount-low" type="text" class="input-small" style="text-align:right" placeholder="下限"></input><br>
+					<input id="list-pane-search-amount-high" type="text" class="input-small" style="text-align:right" placeholder="上限"></input>
+				  </div>
+				<td style="vertical-align:top">
+				  <div class="no-margin control-group">
+					<span id="list-pane-search-memo-caption" class="help-inline">メモ</span><br>
+					<input id="list-pane-search-memo" type="text" class="input-medium"></input>
+				  </div>
+				  <div align="right">
+					<button type="button" id="list-pane-search-panel-close-button" class="btn btn-small">閉じる</button>
+					<button type="button" id="list-pane-search-panel-submit-button" class="btn btn-small btn-primary">検索</button>
+				  </div>
+			  </tr>
+<!-- 			  <tr> -->
+<!-- 				<td><td><td><td> -->
+<!-- 				<td class="pull-right"> -->
+<!-- 				  <button type="button" id="list-pane-search-panel-close-button" class="btn btn-small">閉じる</button> -->
+<!-- 				  <button type="button" id="list-pane-search-panel-submit-button" class="btn btn-small btn-primary">検索</button> -->
 			</table>
 		  </div>
 		</div>

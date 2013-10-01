@@ -135,11 +135,13 @@ kakeibo.model.KakeiboEntryList.prototype.requestEntries = function(offset, limit
 	var self = this;
 
 	console.log("offset:" + offset + "  limit:" + limit);
+	console.log(this.m_query_option.getArray());
 
 	var param = {
 		offset: offset,
 		limit: limit,
-		req_all_ct: (offset == 0) ? 1 : 0
+		req_all_ct: (offset == 0) ? 1 : 0,
+		option: this.m_query_option.getArray()
 	};
 	var call_back = function(status, data){
 		console.log("kakeibo_entry call_back====================================");
@@ -172,7 +174,7 @@ kakeibo.model.KakeiboEntryList.prototype.requestEntries = function(offset, limit
 			}
 		}
 		else{
-			//alert("kakeibo/get_entries/1 is failed!!");
+			alert("kakeibo/get_entries/1 is failed!!");
 		}
 	};
 	kakeibo.model.RequestQueue.pushRequest("POST", "kakeibo/get_entries", param, call_back)
@@ -392,6 +394,63 @@ kakeibo.model.KakeiboEntry.prototype.getAttrHash = function(){
 
 
 /*
+ * KakeiboEntrySearchParam
+ */
+kakeibo.model.KakeiboEntrySearchParam = function(param){
+	this.m_param = [];
+
+	var start_date = kakeibo.model.KakeiboEntryAttrConverter.str2date(param.start_date);
+	if(start_date != null){
+		this.m_param.push(["transaction_date", ">=", kakeibo.model.KakeiboEntryAttrConverter.date2str(start_date)]);
+	}
+
+	var end_date = kakeibo.model.KakeiboEntryAttrConverter.str2date(param.end_date);
+	if(end_date != null){
+		this.m_param.push(["transaction_date", "<=", kakeibo.model.KakeiboEntryAttrConverter.date2str(end_date)]);
+	}
+
+	var debtor = kakeibo.model.KakeiboEntryAttrConverter.str2category(param.debtor);
+	if(debtor != null){
+		if(debtor.getNumChildren() == 0){
+			this.m_param.push(["debtor_sub_id", "=", debtor.getId()]);
+		}
+		else{
+			this.m_param.push(["debtor_id", "=", debtor.getId()]);
+		}
+	}
+
+	var creditor = kakeibo.model.KakeiboEntryAttrConverter.str2category(param.creditor);
+	if(creditor != null){
+		if(creditor.getNumChildren() == 0){
+			this.m_param.push(["creditor_sub_id", "=", creditor.getId()]);
+		}
+		else{
+			this.m_param.push(["creditor_id", "=", creditor.getId()]);
+		}
+	}
+
+	var amount_low = kakeibo.model.KakeiboEntryAttrConverter.str2amount(param.amount_low);
+	if(amount_low != null){
+		this.m_param.push(["amount", ">=", amount_low]);
+	}
+
+	var amount_high = kakeibo.model.KakeiboEntryAttrConverter.str2amount(param.amount_high);
+	if(amount_high != null){
+		this.m_param.push(["amount", "<=", amount_high]);
+	}
+
+	if(param.memo != null && param.memo != ""){
+		this.m_param.push(["memo", "like", '%' + param.memo + '%']);
+	}
+}
+
+
+kakeibo.model.KakeiboEntrySearchParam.prototype.getArray = function(){
+	return this.m_param;
+}
+
+
+/*
  * KakeiboEntrySet (singleton class)
  */
 kakeibo.model.KakeiboEntrySet = {};
@@ -529,6 +588,10 @@ kakeibo.model.KakeiboEntrySet.setUpdateEntryListener = function(func){
 kakeibo.model.KakeiboEntryAttrConverter = {
 
 	str2date: function(val){
+		if(val == null || val == ""){
+			return null;
+		}
+
 		var now = new Date();
 		var year = 0;
 		var month = 0;
@@ -567,6 +630,9 @@ kakeibo.model.KakeiboEntryAttrConverter = {
 	},
 
 	str2amount: function(val){
+		if(val == null || val == ""){
+			return null;
+		}
 		var tmp = val.replace(/,/g, "");
 		if(tmp.match( /^[0-9]+$/ )){
 			return parseInt(tmp, 10);
@@ -575,8 +641,19 @@ kakeibo.model.KakeiboEntryAttrConverter = {
 	},
 
 	str2category: function(val){
+		if(val == null || val == ""){
+			return null;
+		}
 		var category_num = val.split(":")[0].replace(/(^\s+)|(\s+$)/g, "");
 		var category = kakeibo.category_set.getByShortcut(category_num);
+		return category;
+	},
+
+	str2leafCategory: function(val){
+		var category = kakeibo.model.KakeiboEntryAttrConverter.str2category(val);
+		if(category == null || category.getNumChildren() > 0){
+			return null;
+		}
 		return category;
 	},
 
