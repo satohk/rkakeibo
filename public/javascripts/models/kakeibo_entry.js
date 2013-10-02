@@ -409,6 +409,11 @@ kakeibo.model.KakeiboEntrySearchParam = function(param){
 		this.m_param.push(["transaction_date", "<=", kakeibo.model.KakeiboEntryAttrConverter.date2str(end_date)]);
 	}
 
+	var end_date_under = kakeibo.model.KakeiboEntryAttrConverter.str2date(param.end_date_under);
+	if(end_date_under != null){
+		this.m_param.push(["transaction_date", "<", kakeibo.model.KakeiboEntryAttrConverter.date2str(end_date_under)]);
+	}
+
 	var debtor = kakeibo.model.KakeiboEntryAttrConverter.str2category(param.debtor);
 	if(debtor != null){
 		if(debtor.getNumChildren() == 0){
@@ -426,6 +431,16 @@ kakeibo.model.KakeiboEntrySearchParam = function(param){
 		}
 		else{
 			this.m_param.push(["creditor_id", "=", creditor.getId()]);
+		}
+	}
+
+	var category_id = param.category_id;
+	if(category_id != null){
+		if(kakeibo.category_set.getById(category_id).getNumChildren() == 0){
+			this.m_param.push(["category_sub_id", "=", category_id]);
+		}
+		else{
+			this.m_param.push(["category_id", "=", category_id]);
 		}
 	}
 

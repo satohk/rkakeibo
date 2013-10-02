@@ -7,6 +7,8 @@ if(!kakeibo.component) kakeibo.component = {};
 
 kakeibo.component.SummaryTableView = function(params){
 
+	this.m_click_column_listener = null;
+
 	// init params
 	this.m_params = {
 		category_set : null,
@@ -87,7 +89,7 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 		return buf;
 	};
 
-	var row_html = function(category, caption, gray, display, num_col){
+	var row_html = function(category, caption, gray, display, num_col, clickable){
 		var cap = (caption == "" ? category.getName() : caption);
 		var has_child = category.getNumChildren() > 0;
 		var buf =
@@ -96,7 +98,7 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 			'<td width="20"> ' + (has_child ? '<i class="icon-chevron-right clickable">' : '') + '</i> </td>' +
 			'<td width="100">' + cap + '</td>';
 		for(var i = 0; i < num_col; i++){
-			buf += '<td width="100" class="clickable" col="' + i + '" searchable> - </td>';
+			buf += '<td width="100" ' + (clickable ? 'class="clickable"' : '') + ' col="' + i + '" searchable> - </td>';
 		}
 		buf += '<td width="100"></td>' +
 			'<td width="100"></td>' +
@@ -112,8 +114,8 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 
 	// body 1
 	html += '<tbody id="summary-table-tbody1">';
-	html += row_html(this.m_params.category_set.getCreditorSum(), this.m_params.caption_creditor_sum, false, true, this.m_params.num_col);
-	html += row_html(this.m_params.category_set.getDebtorSum(), this.m_params.caption_debtor_sum, false, true, this.m_params.num_col);
+	html += row_html(this.m_params.category_set.getCreditorSum(), this.m_params.caption_creditor_sum, false, true, this.m_params.num_col, false);
+	html += row_html(this.m_params.category_set.getDebtorSum(), this.m_params.caption_debtor_sum, false, true, this.m_params.num_col, false);
 
 	var root = self.m_params.category_set.getRoot();
 	var row_ct = 0;
@@ -122,10 +124,10 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 		if(parent.isAccount()){
 			continue;
 		}
-		html += row_html(parent, "", (row_ct+1) % 2, true, this.m_params.num_col);
+		html += row_html(parent, "", (row_ct+1) % 2, true, this.m_params.num_col, true);
 		for(var j = 0; j < parent.getNumChildren(); j++){
 			var child = parent.getChild(j);
-			html += row_html(child, "", (row_ct+1) % 2, false, this.m_params.num_col);
+			html += row_html(child, "", (row_ct+1) % 2, false, this.m_params.num_col, true);
 		}
 		row_ct++;
 	}
@@ -136,11 +138,11 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 
 	// body 2
 	html += '<tbody id="summary-table-tbody2">';
-	html += row_html(this.m_params.category_set.getAccountSum(), this.m_params.caption_account_sum, false, true, this.m_params.num_col);
+	html += row_html(this.m_params.category_set.getAccountSum(), this.m_params.caption_account_sum, false, true, this.m_params.num_col, false);
 
 	var parent = this.m_params.category_set.getAccountParent();
 	for(var i = 0; i < parent.getNumChildren(); i++){
-		html += row_html(parent.getChild(i), "", (i+1) % 2, true, this.m_params.num_col);
+		html += row_html(parent.getChild(i), "", (i+1) % 2, true, this.m_params.num_col, true);
 	}
 	html += "</tbody>";
 	html += "</table>";
@@ -156,8 +158,9 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 	for(i = 0; i < $rows.length; i++){
 		$row = $($rows[i]);
 		if($row.hasClass("has-child")){
-			$($row[0]).click(onclick_category);
-			$($row[1]).click(onclick_category);
+			var $cols = $row.children();
+			$($cols[0]).click(onclick_category);
+			$($cols[1]).click(onclick_category);
 		}
 	}
 
@@ -173,6 +176,12 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 			var category_id = $col.closest("tr").attr("category-id");
 			var date = kakeibo.utils.calcSummaryColDate(self.m_params.date, -(self.m_params.num_col - 1 - col_no));
 			console.log("col:" + col_no + "  category:" + category_id + "  year:" + date.year + "  month:" + date.month);
+
+			var category_id_num = parseInt(category_id);
+			if(isNaN(category_id_num)){
+				return;
+			}
+			self.m_click_column_listener(date, category_id_num);
 		})
 	}
 }
@@ -285,3 +294,7 @@ kakeibo.component.SummaryTableView.prototype.changeNumCol = function(num_col){
 	this.setCaption();
 }
 
+
+kakeibo.component.SummaryTableView.prototype.addClickColumnListener = function(fn){
+	this.m_click_column_listener = fn;
+}

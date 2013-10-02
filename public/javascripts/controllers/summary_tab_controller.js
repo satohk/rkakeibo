@@ -84,6 +84,33 @@ kakeibo.controller.SummaryTabController.prototype.initTable = function(){
 		header_format_month : $("#summary-pane-grid-header-format").attr("format_month")
 	});
 
+	this.m_summary_table_view.addClickColumnListener(function(date, category_id){
+		kakeibo.main_tab_controller.changePane("navbar-list-pane-selector");
+
+		var start, end;
+		if(date.month == 0){
+			start = "" + date.year + "/1/1";
+			end = "" + (date.year+1) + "/1/1";
+		}
+		else{
+			var next = kakeibo.utils.calcSummaryColDate(date, 1);
+			start = "" + date.year + "/" + date.month + "/1";
+			end = "" + next.year + "/" + next.month + "/1";
+		}
+
+		var param = {
+			start_date: start,
+			end_date_under: end,
+			category_id: category_id,	// debtor or creditor
+		};
+
+		var title = kakeibo.category_set.getById(category_id).getName() + " " + date.year;
+		if(date.month != 0){
+			title += "/" + date.month;
+		}
+		var btn_id = kakeibo.list_tab_controller.addSearchButton(param, title);
+		$("#" + btn_id).click();
+	});
 }
 
 

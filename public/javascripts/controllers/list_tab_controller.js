@@ -340,7 +340,7 @@ kakeibo.controller.ListTabController.prototype.initDetailPanel = function(){
 }
 
 
-kakeibo.controller.ListTabController.prototype.addSearchButton = function(search_param){
+kakeibo.controller.ListTabController.prototype.addSearchButton = function(search_param, title){
 	var self = this;
 
 	this.m_search_button_num++;
@@ -349,7 +349,13 @@ kakeibo.controller.ListTabController.prototype.addSearchButton = function(search
 	var $btn_container = $("#list-pane-search-entries-button-template").parent().clone();
 	var $btn = $btn_container.contents();
 	$btn.attr("id", btn_id);
-	$btn.html($btn.html().replace("%n", ""+this.m_search_button_num));
+
+	if(typeof title === 'undefined'){
+		$btn.html($btn.html().replace("%n", ""+this.m_search_button_num));
+	}
+	else{
+		$btn.html(title);
+	}
 	$btn_container.show();
 	$("#list-pane-entries-button-container").append($btn_container);
 

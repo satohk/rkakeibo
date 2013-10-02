@@ -15,13 +15,13 @@ kakeibo.init = function(categories, settings){
 	{ // init tabs
 		kakeibo.main_tab_controller = new kakeibo.controller.TabController("li");
 		// var main_controller = new kakeibo.controller.MainController(null);
-		var list_tab_controller = new kakeibo.controller.ListTabController();
-		var summary_tab_controller = new kakeibo.controller.SummaryTabController();
-		var setting_tab_controller = new kakeibo.controller.SettingTabController();
+		kakeibo.list_tab_controller = new kakeibo.controller.ListTabController();
+		kakeibo.summary_tab_controller = new kakeibo.controller.SummaryTabController();
+		kakeibo.setting_tab_controller = new kakeibo.controller.SettingTabController();
 
-		kakeibo.main_tab_controller.addPane("navbar-list-pane-selector", function(){list_tab_controller.onActivated()});
-		kakeibo.main_tab_controller.addPane("navbar-summary-pane-selector", function(){summary_tab_controller.onActivated()});
-		kakeibo.main_tab_controller.addPane("navbar-setting-pane-selector", function(){setting_tab_controller.onActivated()});
+		kakeibo.main_tab_controller.addPane("navbar-list-pane-selector", function(){kakeibo.list_tab_controller.onActivated()});
+		kakeibo.main_tab_controller.addPane("navbar-summary-pane-selector", function(){kakeibo.summary_tab_controller.onActivated()});
+		kakeibo.main_tab_controller.addPane("navbar-setting-pane-selector", function(){kakeibo.setting_tab_controller.onActivated()});
 		kakeibo.main_tab_controller.changePane("navbar-list-pane-selector");
 	}
 }

@@ -168,7 +168,13 @@ class KakeiboEntry < ActiveRecord::Base
         return null
       end
 
-      condition += " and " + lhs + " " + op + " " + rhs      
+      if lhs == "category_id"
+        condition += " and (debtor_id #{op} #{rhs} or creditor_id #{op} #{rhs}) "
+      elsif lhs == "category_sub_id"
+        condition += " and (debtor_sub_id #{op} #{rhs} or creditor_sub_id #{op} #{rhs}) "
+      else
+        condition += " and " + lhs + " " + op + " " + rhs      
+      end
     end
 
     logger.debug condition
