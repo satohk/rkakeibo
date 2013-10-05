@@ -59,7 +59,7 @@ kakeibo.controller.SettingTabBudgetController.prototype.initView = function(){
 	for(i = 0; i < root.getNumChildren(); i++){
 		var category = root.getChild(i);
 
-		if(category.isDebtor() && (!category.isAccount())){
+		if(category.getCategoryType() == kakeibo.model.CategoryType.COST){
 			var copy = $template.clone();
 			copy.show();
 			copy.attr("category-id", category.getId());

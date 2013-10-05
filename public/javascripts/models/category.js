@@ -3,12 +3,25 @@ if(!kakeibo.model){
 	kakeibo.model = {}; // namespace
 }
 
+
+/*
+ * CategoryType
+ */
+kakeibo.model.CategoryType = {
+    INCOME: 1,		// é˚ì¸
+    COST: 2,		// îÔóp
+    ASSETS: 3,		// éëéY
+    LIABILITIES: 4,	// ïâç¬
+    NET_ASSETS: 5,	// èÉéëéY
+	NET_INCOME: 6	// èÉóòâv (é˚éxç∑äz)
+};
+
 /*
  * Category
  */
 kakeibo.model.Category = function(params, category_set){
 	this.m_id = params.id;
-	this.m_is_account = params.is_account;
+	this.m_category_type = params.category_type;
 	this.m_is_creditor = params.is_creditor;
 	this.m_name = params.name;
 	this.m_parent_id = params.parent_id
@@ -24,8 +37,8 @@ kakeibo.model.Category = function(params, category_set){
 }
 
 kakeibo.model.Category.prototype.changeAttr = function(params){
-	if("is_account" in params){
-		this.m_is_account = params.is_account;
+	if("category_type" in params){
+		this.m_category_type = params.category_type;
 	}
 	if("is_creditor" in params){
 		this.m_is_creditor = params.is_creditor;
@@ -59,7 +72,7 @@ kakeibo.model.Category.prototype.changeParent = function(parent){
 kakeibo.model.Category.prototype.getAttrHash = function(){
 	return {
 		id: this.m_id,
-		is_account: this.m_is_account,
+		category_type: this.m_category_type,
 		is_creditor: this.m_is_creditor,
 		parent_id: this.m_parent_id,
 		name: this.m_name,
@@ -72,7 +85,7 @@ kakeibo.model.Category.prototype.equalTo = function(rhs){
 	if(this.id != rhs.id){
 		return false;
 	}
-	else if(this.m_is_account != rhs.m_is_account){
+	else if(this.m_category_type != rhs.m_category_type){
 		return false;
 	}
 	else if(this.m_is_creditor != rhs.m_is_creditor){
@@ -98,8 +111,8 @@ kakeibo.model.Category.prototype.getId = function(){
 	return this.m_id;
 }
 
-kakeibo.model.Category.prototype.isAccount = function(){
-	return this.m_is_account;
+kakeibo.model.Category.prototype.getCategoryType = function(){
+	return this.m_category_type;
 }
 
 kakeibo.model.Category.prototype.isCreditor = function(){
@@ -142,6 +155,17 @@ kakeibo.model.Category.prototype.getNumChildren = function(){
 	return this.m_children.length;
 }
 
+kakeibo.model.Category.prototype.getNumChildrenOfType = function(type){
+	var num = 0;
+	for(var i = 0; i < this.m_children.length; i++){
+		if(this.m_children[i].getCategoryType() == type){
+			num++;
+		}
+	}
+	return num;
+}
+
+
 
 kakeibo.model.Category.prototype.removeChild = function(child){
 	var index = -1;
@@ -171,7 +195,7 @@ kakeibo.model.CategorySet = function(array){
 	// create root
 	this.m_root = this.add({
 		id: 0,
-		is_account: false,
+		category_type: 0,
 		is_creditor: false,
 		name: "-",
 		parent_id: -1,
@@ -179,32 +203,58 @@ kakeibo.model.CategorySet = function(array){
 		shortcut: 0
 	});
 
-	this.m_creditor_sum = this.add({
-		id: "creditor_sum",
-		is_account: false,
+	this.m_income_sum = this.add({
+		id: "income_sum",
+		category_type: kakeibo.model.CategoryType.INCOME,
 		is_creditor: true,
-		name: "creditor_sum",
-		parent_id: -1,
-		display_order: -1,
-		shortcut: 0
-	});
-	this.add(this.m_creditor_sum);
-
-	this.m_debtor_sum = this.add({
-		id: "debtor_sum",
-		is_account: false,
-		is_creditor: false,
-		name: "debtor_sum",
+		name: "income_sum",
 		parent_id: -1,
 		display_order: -1,
 		shortcut: 0
 	});
 
-	this.m_account_sum = this.add({
-		id: "account_sum",
-		is_account: true,
+	this.m_cost_sum = this.add({
+		id: "cost_sum",
+		category_type: kakeibo.model.CategoryType.COST,
 		is_creditor: false,
-		name: "account_sum",
+		name: "cost_sum",
+		parent_id: -1,
+		display_order: -1,
+		shortcut: 0
+	});
+
+	this.m_assets_sum = this.add({
+		id: "assets_sum",
+		category_type: kakeibo.model.CategoryType.ASSETS,
+		is_creditor: false,
+		name: "assets_sum",
+		parent_id: -1,
+		display_order: -1,
+		shortcut: 0
+	});
+	this.m_liabilities_sum = this.add({
+		id: "liabilities_sum",
+		category_type: kakeibo.model.CategoryType.LIABILITIES,
+		is_creditor: true,
+		name: "liabilities_sum",
+		parent_id: -1,
+		display_order: -1,
+		shortcut: 0
+	});
+	this.m_net_assets_sum = this.add({
+		id: "net_assets_sum",
+		category_type: kakeibo.model.CategoryType.NET_ASSETS,
+		is_creditor: true,
+		name: "net_assets_sum",
+		parent_id: -1,
+		display_order: -1,
+		shortcut: 0
+	});
+	this.m_net_income_sum = this.add({
+		id: "net_income_sum",
+		category_type: kakeibo.model.CategoryType.NET_INCOME,
+		is_creditor: false,
+		name: "net_income_sum",
 		parent_id: -1,
 		display_order: -1,
 		shortcut: 0
@@ -212,9 +262,6 @@ kakeibo.model.CategorySet = function(array){
 
 	for(var i = 0; i < array.length; i++){
 		var category = this.add(array[i]);
-		if(category.isAccount() && category.isParent()){
-			this.m_account_parent = category;
-		}
 	}
 }
 
@@ -282,20 +329,40 @@ kakeibo.model.CategorySet.prototype.getRoot = function(){
 	return this.m_root;
 }
 
-kakeibo.model.CategorySet.prototype.getCreditorSum = function(){
-	return this.m_creditor_sum;
+kakeibo.model.CategorySet.prototype.getSumCategoryOfType = function(type){
+	switch(type){
+	case kakeibo.model.CategoryType.INCOME: return this.getIncomeSum();
+	case kakeibo.model.CategoryType.COST: return this.getCostSum();
+	case kakeibo.model.CategoryType.ASSETS: return this.getAssetsSum();
+	case kakeibo.model.CategoryType.LIABILITIES: return this.getLiabilitiesSum();
+	case kakeibo.model.CategoryType.NET_ASSETS: return this.getNetAssetsSum();
+	case kakeibo.model.CategoryType.NET_INCOME: return this.getNetIncomeSum();
+	}
+	return null;
 }
 
-kakeibo.model.CategorySet.prototype.getDebtorSum = function(){
-	return this.m_debtor_sum;
+kakeibo.model.CategorySet.prototype.getIncomeSum = function(){
+	return this.m_income_sum;
 }
 
-kakeibo.model.CategorySet.prototype.getAccountSum = function(){
-	return this.m_account_sum;
+kakeibo.model.CategorySet.prototype.getCostSum = function(){
+	return this.m_cost_sum;
 }
 
-kakeibo.model.CategorySet.prototype.getAccountParent = function(){
-	return this.m_account_parent;
+kakeibo.model.CategorySet.prototype.getAssetsSum = function(){
+	return this.m_assets_sum;
+}
+
+kakeibo.model.CategorySet.prototype.getLiabilitiesSum = function(){
+	return this.m_liabilities_sum;
+}
+
+kakeibo.model.CategorySet.prototype.getNetAssetsSum = function(){
+	return this.m_net_assets_sum;
+}
+
+kakeibo.model.CategorySet.prototype.getNetIncomeSum = function(){
+	return this.m_net_income_sum;
 }
 
 kakeibo.model.CategorySet.prototype.getMaxDisplayOrder = function(){
@@ -345,6 +412,10 @@ kakeibo.model.CategorySet.prototype.update = function(new_set, id_modify_list, c
 
 	// modify, add
 	for(id in new_set.m_id2category){
+		if(isNaN(parseInt(id))){
+			continue;
+		}
+
 		var old_c = this.getById(id);
 		var new_c = new_set.getById(id);
 

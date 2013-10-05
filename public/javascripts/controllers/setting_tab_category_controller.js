@@ -123,7 +123,7 @@ kakeibo.controller.SettingTabCategoryController.prototype.initHandlers = functio
 				var child = self.m_active_category.getChild(i);
 				self.m_working_category_set.modify(
 					child.getId(),
-					{is_account:attr.is_account, is_creditor:attr.is_creditor}
+					{category_type:attr.category_type, is_creditor:attr.is_creditor}
 				);
 			}
 			self.m_working_category_set.modify(self.m_active_category.getId(), attr);
@@ -231,13 +231,21 @@ kakeibo.controller.SettingTabCategoryController.prototype.getAttrHash = function
 	if(this.m_active_category.isParent()){
 		result.parent_id = 0;
 		result.parent = this.m_working_category_set.getById(result.parent_id);
-		result.is_account = $("#setting-pane-category-type-account").attr("checked") == "checked";
-		result.is_creditor = $("#setting-pane-category-type-creditor").attr("checked") == "checked";
+
+		// type
+		var type_val = $("#setting-pane-category-form [name=CategoryTypeSelector]:checked").val();
+		switch(type_val){
+		case "income":		result.category_type = kakeibo.model.CategoryType.INCOME;		result.is_creditor = true; break;
+		case "cost":		result.category_type = kakeibo.model.CategoryType.COST;			result.is_creditor = false; break;
+		case "assets":		result.category_type = kakeibo.model.CategoryType.ASSETS;		result.is_creditor = false; break;
+		case "liabilities":	result.category_type = kakeibo.model.CategoryType.LIABILITIES;	result.is_creditor = true; break;
+		case "net-assets":	result.category_type = kakeibo.model.CategoryType.NET_ASSETS;	result.is_creditor = false; break;
+		}
 	}
 	else{
 		result.parent_id = parseInt($("#setting-pane-category-parent-select option:selected").val());
 		result.parent = this.m_working_category_set.getById(result.parent_id);
-		result.is_account = result.parent.isAccount();
+		result.category_type = result.parent.getCategoryType();
 		result.is_creditor = result.parent.isCreditor();
 	}
 	result.name = $("#setting-pane-category-name-input").val();
@@ -315,74 +323,55 @@ kakeibo.controller.SettingTabCategoryController.prototype.changeActiveCategory =
 
 	var $shortcut = $("#setting-pane-category-shortcut-input");
 	var $parent = $("#setting-pane-category-parent-select");
-	var $type = $("#setting-pane-category-type");
+ 	var $type = $("#setting-pane-category-form [name=CategoryTypeSelector]");
+	var $type_parent = $("#setting-pane-category-type");
 
-	if(category.isAccount()){
-		$("#setting-pane-category-type-account").attr("checked", true);
-	}
-	else if(category.isDebtor()){
-		$("#setting-pane-category-type-debtor").attr("checked", true);
-	}
-	else if(category.isCreditor()){
-		$("#setting-pane-category-type-creditor").attr("checked", true);
+	switch(category.getCategoryType()){
+	case kakeibo.model.CategoryType.INCOME:			$type.val(["income"]); break;
+	case kakeibo.model.CategoryType.COST:			$type.val(["cost"]); break;
+	case kakeibo.model.CategoryType.ASSETS:			$type.val(["assets"]); break;
+	case kakeibo.model.CategoryType.LIABILITIES:	$type.val(["liabilities"]); break;
+	case kakeibo.model.CategoryType.NET_ASSETS:		$type.val(["net-assets"]); break;
 	}
 
 	$shortcut.val(category.getShortcut());
 
 	if(category.isParent()){
-// 		$shortcut.parent().parent().hide();
 		$parent.parent().parent().hide();
-		$type.show();
+		$type_parent.show();
 	}
 	else{
 		$parent.val(category.getParent().getId());
-// 		$shortcut.parent().parent().show();
 		$parent.parent().parent().show();
-		$type.hide();
+		$type_parent.hide();
 	}
 }
 
 
 kakeibo.controller.SettingTabCategoryController.prototype.submit = function(){
-	var num_account_parent = 0;
-	var num_creditor_parent = 0;
 	var root = this.m_working_category_set.getRoot()
 
-	for(var i = 0; i < root.getNumChildren(); i++){
-		if(root.getChild(i).isAccount()){
-			num_account_parent++;
+	var call_back = function(status, data){
+		kakeibo.loading_screen.hide();
+		
+		if(status == "success"){
+			jSuccess($("#setting-pane-msg-category-success-update").html(),
+					 {
+						 autoHide : false,
+						 ShowOverlay : true,
+						 HorizontalPosition : 'center',
+						 onClosed : function(){
+							 document.location.reload(true);
+						 }
+					 });
 		}
-		if(root.getChild(i).isCreditor()){
-			num_creditor_parent++;
+		else{
+			alert("kakeibo/update_category is failed!!");
 		}
-	}
-
-	if(num_account_parent == 1 && num_creditor_parent == 1){
-		var call_back = function(status, data){
-			kakeibo.loading_screen.hide();
-
-			if(status == "success"){
-				jSuccess($("#setting-pane-msg-category-success-update").html(),
-						 {
-							 autoHide : false,
-							 ShowOverlay : true,
-							 HorizontalPosition : 'center',
-							 onClosed : function(){
-								 document.location.reload(true);
-							 }
-						 });
-			}
-			else{
-				alert("kakeibo/update_category is failed!!");
-			}
-		};
-
-		kakeibo.category_set.update(this.m_working_category_set, this.m_id_modify_list, call_back);
-		kakeibo.loading_screen.show();
-	}
-	else{
-		jError($("#setting-pane-msg-category-invalid-account-creditor-num").html(), {clickOverlay: true});
-	}
+	};
+	
+	kakeibo.category_set.update(this.m_working_category_set, this.m_id_modify_list, call_back);
+	kakeibo.loading_screen.show();
 }
 
 

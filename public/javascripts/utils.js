@@ -40,13 +40,13 @@ kakeibo.utils.isValidDate = function(date){
 
 
 kakeibo.utils.getCategoryColor = function(c){
-	if(c.isAccount()){
-		return "#B8860B";
-	}
-	else if(c.isCreditor()){
-		return "#468847";
-	}
-	else{
-		return "#b94a48";
+	switch(c.getCategoryType()){
+	case kakeibo.model.CategoryType.INCOME: return "#468847";
+	case kakeibo.model.CategoryType.COST: return "#b94a48";
+	case kakeibo.model.CategoryType.ASSETS: return "#468847";
+	case kakeibo.model.CategoryType.LIABILITIES: return "#b94a48";
+	case kakeibo.model.CategoryType.NET_ASSETS: return "#000000";
+	case kakeibo.model.CategoryType.NET_INCOME: return "#000000";
 	}
 }
+

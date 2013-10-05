@@ -5,7 +5,7 @@ class CreateCategories < ActiveRecord::Migration
       t.integer :parent_category_id
       t.string  :name
       t.boolean :is_creditor
-      t.boolean :is_account
+      t.integer :category_type
       t.string  :shortcut
       t.integer :display_order
 

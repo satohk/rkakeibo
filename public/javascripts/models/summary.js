@@ -31,6 +31,12 @@ kakeibo.model.SummaryCell.prototype.add = function(rhs){
 	this.m_budget += rhs.m_budget;
 }
 
+kakeibo.model.SummaryCell.prototype.subtract = function(rhs){
+	this.m_sum_amount -= rhs.m_sum_amount;
+	this.m_balance -= rhs.m_balance;
+	this.m_budget -= rhs.m_budget;
+}
+
 kakeibo.model.SummaryCell.prototype.multi = function(rhs){
 	this.m_sum_amount *= rhs;
 	this.m_balance *= rhs;
@@ -62,9 +68,12 @@ kakeibo.model.SummaryTable.requestSummaries = function(year, month, num_col){
 		if(status == "success"){
 			var table = data.table;
 			for(var key_col in table){
-				var debtor_sum = new kakeibo.model.SummaryCell([0, 0, 0]);
-				var creditor_sum = new kakeibo.model.SummaryCell([0, 0, 0]);
-				var account_sum = new kakeibo.model.SummaryCell([0, 0, 0]);
+				var income_sum = new kakeibo.model.SummaryCell([0, 0, 0]);
+				var cost_sum = new kakeibo.model.SummaryCell([0, 0, 0]);
+				var assets_sum = new kakeibo.model.SummaryCell([0, 0, 0]);
+				var liabilities_sum = new kakeibo.model.SummaryCell([0, 0, 0]);
+				var net_assets_sum = new kakeibo.model.SummaryCell([0, 0, 0]);
+				var net_income_sum = new kakeibo.model.SummaryCell([0, 0, 0]);
 				var new_col = {};
 				
 				for(var key_row in table[key_col]){
@@ -82,21 +91,30 @@ kakeibo.model.SummaryTable.requestSummaries = function(year, month, num_col){
 					}
 
 					if(category.isParent()){
-						if(category.isAccount()){
-							account_sum.add(cell);
-						}
-						else if(category.isCreditor()){
-							creditor_sum.add(cell);
-						}
-						else if(category.isDebtor()){
-							debtor_sum.add(cell);
+						switch(category.getCategoryType()){
+						case kakeibo.model.CategoryType.INCOME: income_sum.add(cell); break;
+						case kakeibo.model.CategoryType.COST: cost_sum.add(cell); break;
+						case kakeibo.model.CategoryType.ASSETS: assets_sum.add(cell); break;
+						case kakeibo.model.CategoryType.LIABILITIES: liabilities_sum.add(cell); break;
 						}
 					}
 					new_col[key_row] = cell;
 				}
-				new_col[kakeibo.category_set.getAccountSum().getId()] = account_sum;
-				new_col[kakeibo.category_set.getCreditorSum().getId()] = creditor_sum;
-				new_col[kakeibo.category_set.getDebtorSum().getId()] = debtor_sum;
+
+				// calc net_assts
+				net_assets_sum.add(assets_sum);
+				net_assets_sum.subtract(liabilities_sum);
+
+				// calc net_income
+				net_income_sum.add(income_sum);
+				net_income_sum.subtract(cost_sum);
+
+				new_col[kakeibo.category_set.getIncomeSum().getId()] = income_sum;
+				new_col[kakeibo.category_set.getCostSum().getId()] = cost_sum;
+				new_col[kakeibo.category_set.getAssetsSum().getId()] = assets_sum;
+				new_col[kakeibo.category_set.getLiabilitiesSum().getId()] = liabilities_sum;
+				new_col[kakeibo.category_set.getNetAssetsSum().getId()] = net_assets_sum;
+				new_col[kakeibo.category_set.getNetIncomeSum().getId()] = net_income_sum;
 
 				self.m_all_summaries_hash[key_col] = new_col;
 			}

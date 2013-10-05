@@ -6,7 +6,8 @@
 		  <div id="summary-pane-subpane-selector" class="btn-group" data-toggle="buttons-radio">
 			<!-- <button id="summary-pane-table-button" class="btn" pane-id="summary-pane-table-subpane"><i class="icon-th"></i></button> -->
 			<!-- <button id="summary-pane-chart-button" class="btn" pane-id="summary-pane-chart-subpane"><i class="icon-align-left"></i></button> -->
-			<button type="button" id="summary-pane-table-button" class="btn" pane_id="summary-pane-table-subpane">テーブル</button>
+			<button type="button" id="summary-pane-pl-table-button" class="btn" pane_id="summary-pane-pl-table-subpane">損益</button>
+			<button type="button" id="summary-pane-bs-table-button" class="btn" pane_id="summary-pane-bs-table-subpane">資産</button>
 			<button type="button" id="summary-pane-chart-button" class="btn" pane_id="summary-pane-chart-subpane">グラフ</button>
 		  </div>
 		  <div class="pull-right">
@@ -36,8 +37,13 @@
   <div class="row">
 	<div class="span12">
 
-	  <div class="tab-pane" id="summary-pane-table-subpane">
-		<div id="summary-pane-grid-wrapper" class="grid-wrapper">
+	  <div class="tab-pane" id="summary-pane-pl-table-subpane">
+		<div id="summary-pane-pl-table-wrapper" class="grid-wrapper">
+		</div>
+	  </div>
+
+	  <div class="tab-pane" id="summary-pane-bs-table-subpane">
+		<div id="summary-pane-bs-table-wrapper" class="grid-wrapper">
 		</div>
 	  </div>
 
@@ -70,33 +76,7 @@
 </div>
 
 <div id="summary-pane-caption-category" style="display:none">
-  項目
-</div>
-
-<div id="summary-pane-caption-account" style="display:none">
-  資産
-</div>
-
-<div id="summary-pane-caption-creditor-sum" style="display:none">
-  <strong class="text-success">
-	収入計
-  </strong>
-</div>
-
-<div id="summary-pane-caption-debtor-sum" style="display:none">
-  <strong class="text-error">
-	支出計
-  </strong>
-</div>
-
-<div id="summary-pane-caption-account-sum" style="display:none">
-  <strong class="text-success">
-	資産合計
-  </strong>
-</div>
-
-<div id="summary-pane-caption-account-total" style="display:none">
-  資産累計
+  集計
 </div>
 
 <div id="summary-pane-grid-header-format" style="display:none"

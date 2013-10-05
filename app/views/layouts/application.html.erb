@@ -24,18 +24,29 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <a class="brand" href="#">rkakeibo beta </a>
+      <a class="brand" href="#">家庭の経理</a>
 	  <% if user_signed_in? -%>
       <div class="btn-group pull-right">
-        <a class="btn dropdown-toggle btn-inverse" data-toggle="dropdown" href="#">
-          <i class="icon-user icon-white"></i> <%= current_user.email %>
-          <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Profile</a></li>
-          <li class="divider"></li>
-          <li><%= link_to 'Sign out', destroy_user_session_path%></li>
-        </ul>
+		<%= link_to destroy_user_session_path, :class=>"btn btn-inverse" do%>
+		<i class="icon-off icon-white"></i>&nbsp;Log out
+		<% end %>
+
+<!--         <a class="btn dropdown-toggle btn-inverse" data-toggle="dropdown" href="#"> -->
+<!--           <i class="icon-user icon-white"></i> <%= current_user.email %> -->
+<!--           <span class="caret"></span> -->
+<!--         </a> -->
+<!--         <ul class="dropdown-menu"> -->
+<!-- 		  <li class="dropdown-submenu"> -->
+<!-- 			<a href="#">アカウント</a> -->
+<!-- 			<ul class="dropdown-menu"> -->
+<!-- 			  <li><a href="#">メールアドレス変更</a></li> -->
+<!-- 			  <li><a href="#">パスワード変更</a></li> -->
+<!-- 			</ul> -->
+<!-- 		  </li> -->
+<!--           <li> <%= link_to "アカウント管理", edit_user_password_path %> -->
+<!--           <li class="divider"></li> -->
+<!--           <li><%= link_to 'ログアウト', destroy_user_session_path%></li> -->
+<!--         </ul> -->
       </div>
       <ul class="nav">
         <li><a href="#" id="navbar-list-pane-selector" pane_id="list-pane" >記入/一覧</a></li>

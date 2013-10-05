@@ -47,4 +47,6 @@ Rkakeibo::Application.configure do
     :password => ENV['MAILGUN_SMTP_PASSWORD'] || "hogehoge",
     :domain => ENV['rkakeibo.mailgun.org'] || "hogehoge.org"
   }
+
+  config.action_mailer.default_url_options = { :host => ENV['RAILS_HOSTNAME'] || "localhost:3000" }
 end

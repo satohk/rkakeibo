@@ -95,7 +95,7 @@
 
 		<hr>
 
-		<form class="form-horizontal">
+		<form id="setting-pane-category-form" class="form-horizontal">
 		  <div class="control-group">
 		  	<label class="control-label">並び順</label>
 		  	<div class="controls">
@@ -110,31 +110,39 @@
 			</div>
 		  </div>
 		  <div class="control-group">
-			<label class="control-label">親科目</label>
-			<div class="controls">
-			  <select id="setting-pane-category-parent-select"></select>
-			</div>
-		  </div>
-		  <div class="control-group">
 			<label class="control-label">科目コード</label>
 			<div class="controls">
 			  <input type="text" class="input" id="setting-pane-category-shortcut-input">
+			</div>
+		  </div>
+		  <div class="control-group">
+			<label class="control-label">親科目</label>
+			<div class="controls">
+			  <select id="setting-pane-category-parent-select"></select>
 			</div>
 		  </div>
 		  <div id="setting-pane-category-type" class="control-group">
 			<label class="control-label">種類</label>
 			<div class="controls">
 			  <label class="radio">
-				<input type="radio" name="CategoryTypeSelector" id="setting-pane-category-type-creditor" value="creditor" checked>
-				支出（借り方科目）
+				<input type="radio" name="CategoryTypeSelector" value="income">
+				収入
 			  </label>
 			  <label class="radio">
-				<input type="radio" name="CategoryTypeSelector" id="setting-pane-category-type-debtor" value="debtor">
-				収入（貸し方科目）
+				<input type="radio" name="CategoryTypeSelector" value="cost">
+				支出
 			  </label>
 			  <label class="radio">
-				<input type="radio" name="CategoryTypeSelector" id="setting-pane-category-type-account" value="account">
-				資産（借り方科目）
+				<input type="radio" name="CategoryTypeSelector" value="assets">
+				資産
+			  </label>
+			  <label class="radio">
+				<input type="radio" name="CategoryTypeSelector" value="liabilities">
+				負債
+			  </label>
+			  <label class="radio">
+				<input type="radio" name="CategoryTypeSelector" value="net-assets">
+				純資産
 			  </label>
 			</div>
 		  </div>

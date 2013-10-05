@@ -16,14 +16,15 @@ kakeibo.controller.SummaryTabController = function(context){
 	this.m_download_page_size = 12;
 	this.m_chart_num_col = 12;
 	this.initSubpane();
-	this.initChart();
-	this.initTable();
+	//this.initChart();
+	this.initTables();
 	this.initDateSelector();
 
 	kakeibo.model.Setting.addUpdateListener(function(key){
 		if(key == "num-summary-col"){
 			var val = kakeibo.model.Setting.getInt(key);
-			self.m_summary_table_view.changeNumCol(val);
+			self.m_pl_table_view.changeNumCol(val);
+			self.m_bs_table_view.changeNumCol(val);
 			self.updateView();
 		}
 	});
@@ -48,8 +49,11 @@ kakeibo.controller.SummaryTabController.prototype.initSubpane = function(){
 
 	var onchange = function(selector_id){
 		self.m_subpane_selector_id = selector_id;
-		if(selector_id == "summary-pane-table-button"){
-			self.m_subpane = "table";
+		if(selector_id == "summary-pane-pl-table-button"){
+			self.m_subpane = "pl-table";
+		}
+		else if(selector_id == "summary-pane-bs-table-button"){
+			self.m_subpane = "bs-table";
 		}
 		else{
 			self.m_subpane = "chart";
@@ -60,31 +64,44 @@ kakeibo.controller.SummaryTabController.prototype.initSubpane = function(){
 	}
 
 	this.m_subpane_controller = new kakeibo.controller.TabController("button");
-	this.m_subpane_controller.addPane("summary-pane-table-button", onchange);
+	this.m_subpane_controller.addPane("summary-pane-pl-table-button", onchange);
+	this.m_subpane_controller.addPane("summary-pane-bs-table-button", onchange);
 	this.m_subpane_controller.addPane("summary-pane-chart-button", onchange);
-	this.m_subpane_controller.changePane("summary-pane-table-button");
+	this.m_subpane_controller.changePane("summary-pane-pl-table-button");
 }
 
 
-kakeibo.controller.SummaryTabController.prototype.initTable = function(){
-	this.m_summary_table_view = new kakeibo.component.SummaryTableView({
+kakeibo.controller.SummaryTabController.prototype.initTables = function(){
+	this.m_pl_table_view = new kakeibo.component.SummaryTableView({
 		category_set : kakeibo.category_set,
 		summary_table : kakeibo.model.SummaryTable,
 		num_col : kakeibo.model.Setting.getInt("num-summary-col"),
-		container : "summary-pane-grid-wrapper",
+		container : "summary-pane-pl-table-wrapper",
 		caption_budget : $("#summary-pane-caption-budget").html(),
 		caption_remain : $("#summary-pane-caption-remain").html(),
 		caption_category : $("#summary-pane-caption-category").html(),
-		caption_creditor_sum : $("#summary-pane-caption-creditor-sum").html(),
-		caption_debtor_sum : $("#summary-pane-caption-debtor-sum").html(),
-		caption_account : $("#summary-pane-caption-account").html(),
-		caption_account_sum : $("#summary-pane-caption-account-sum").html(),
-		caption_account_total : $("#summary-pane-caption-account-total").html(),
+		column_type: "sum_amount",
+		rows_type: [kakeibo.model.CategoryType.INCOME, kakeibo.model.CategoryType.COST, kakeibo.model.CategoryType.NET_INCOME],
+		show_budgets: true,
+		header_format_year : $("#summary-pane-grid-header-format").attr("format_year"),
+		header_format_month : $("#summary-pane-grid-header-format").attr("format_month")
+	});
+	this.m_bs_table_view = new kakeibo.component.SummaryTableView({
+		category_set : kakeibo.category_set,
+		summary_table : kakeibo.model.SummaryTable,
+		num_col : kakeibo.model.Setting.getInt("num-summary-col"),
+		container : "summary-pane-bs-table-wrapper",
+		caption_budget : "",
+		caption_remain : "",
+		caption_category : $("#summary-pane-caption-category").html(),
+		column_type: "balance",
+		rows_type: [kakeibo.model.CategoryType.ASSETS, kakeibo.model.CategoryType.LIABILITIES, kakeibo.model.CategoryType.NET_ASSETS],
+		show_budgets: false,
 		header_format_year : $("#summary-pane-grid-header-format").attr("format_year"),
 		header_format_month : $("#summary-pane-grid-header-format").attr("format_month")
 	});
 
-	this.m_summary_table_view.addClickColumnListener(function(date, category_id){
+	var onclick = function(date, category_id){
 		kakeibo.main_tab_controller.changePane("navbar-list-pane-selector");
 
 		var start, end;
@@ -110,7 +127,10 @@ kakeibo.controller.SummaryTabController.prototype.initTable = function(){
 		}
 		var btn_id = kakeibo.list_tab_controller.addSearchButton(param, title);
 		$("#" + btn_id).click();
-	});
+	};
+
+	this.m_pl_table_view.addClickColumnListener(onclick);
+	this.m_bs_table_view.addClickColumnListener(onclick);
 }
 
 
@@ -198,7 +218,8 @@ kakeibo.controller.SummaryTabController.prototype.setDate = function(new_date){
 			$input.val("" + this.m_focused_date.year + "/" + this.m_focused_date.month);
 		}
 
-		this.m_summary_table_view.setDate(this.m_focused_date);
+		this.m_pl_table_view.setDate(this.m_focused_date);
+		this.m_bs_table_view.setDate(this.m_focused_date);
 		this.m_chart.setDate(this.m_focused_date.year, this.m_focused_date.month);
 		this.updateView();
 
@@ -222,8 +243,11 @@ kakeibo.controller.SummaryTabController.prototype.updateView = function(){
 		downloading = !kakeibo.model.SummaryTable.setPage(date.year, date.month, this.m_download_page_size);
 	}
 
-	if(this.m_subpane == "table"){
-		this.m_summary_table_view.update();
+	if(this.m_subpane == "pl-table"){
+		this.m_pl_table_view.update();
+	}
+	else if(this.m_subpane == "bs-table"){
+		this.m_bs_table_view.update();
 	}
 	else{
 		this.m_chart.update();
@@ -243,8 +267,11 @@ kakeibo.controller.SummaryTabController.prototype.adjustViewSize = function(){
 		return;
 	}
 
-	if(this.m_subpane == "table"){
-		this.adjustGridSize();
+	if(this.m_subpane == "pl-table"){
+		this.adjustGridSize("summary-pane-pl-table-wrapper");
+	}
+	if(this.m_subpane == "bs-table"){
+		this.adjustGridSize("summary-pane-bs-table-wrapper");
 	}
 	else{
 		this.adjustChartSize();
@@ -252,10 +279,10 @@ kakeibo.controller.SummaryTabController.prototype.adjustViewSize = function(){
 }
 
 
-kakeibo.controller.SummaryTabController.prototype.adjustGridSize = function(){
+kakeibo.controller.SummaryTabController.prototype.adjustGridSize = function(table_id){
 	var MARGIN = 20 + 40;
 	var window_height = $(window).height();
-	var grid = $('#summary-pane-grid-wrapper');
+	var grid = $('#' + table_id);
 	var grid_top = grid.offset().top;
 	grid.height(window_height - grid_top - MARGIN);
 }
