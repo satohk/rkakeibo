@@ -5,12 +5,15 @@ if(!kakeibo) kakeibo = {};
 if(!kakeibo.component) kakeibo.component = {};
 if(!kakeibo.component.chart) kakeibo.component.chart = {}; // namespace
 
-kakeibo.component.chart.DebtorPieChart = function(params){
+kakeibo.component.chart.PieChart = function(params){
 	this.m_title = params.title;
 	this.m_render_to = params.render_to;
 	this.m_num_cols = 1;//params.num_cols;
 	this.m_year = 0;
 	this.m_month = 0;
+	this.m_categories = params.categories;
+	this.m_summary_table = params.summary_table;
+	this.m_column_type = params.column_type;	// "balance" or "sum_amount"
 	
 	this.initChartObject();
 	this.setDate(params.year, params.month);
@@ -18,22 +21,18 @@ kakeibo.component.chart.DebtorPieChart = function(params){
 }
 
 
-kakeibo.component.chart.DebtorPieChart.prototype =
+kakeibo.component.chart.PieChart.prototype =
 	Object.create(kakeibo.component.chart.AbstractChart.prototype);
 
 
-kakeibo.component.chart.DebtorPieChart.prototype.initChartObject = function(){
-	this.m_category_id_list = [];
+kakeibo.component.chart.PieChart.prototype.initChartObject = function(){
+	var series = [];
 
-	{
-		var root = kakeibo.category_set.getRoot();
-
-		for(var i = 0; i < root.getNumChildren(); i++){
-			var category = root.getChild(i);
-			if(category.isDebtor() && !category.isAccount()){
-				this.m_category_id_list.push(category.getId());
-			}
-		}
+	for(var i = 0; i < this.m_categories.length; i++){
+		series.push({
+			name: this.m_categories[i].getName(),
+			data: []
+		});
 	}
 
     this.m_chart = new Highcharts.Chart({
@@ -74,25 +73,28 @@ kakeibo.component.chart.DebtorPieChart.prototype.initChartObject = function(){
 }
 
 
-kakeibo.component.chart.DebtorPieChart.prototype.setDate = function(year, month){
+kakeibo.component.chart.PieChart.prototype.setDate = function(year, month){
 	this.m_year = year;
 	this.m_month = month;
 }
 
 
-kakeibo.component.chart.DebtorPieChart.prototype.update = function(){
+kakeibo.component.chart.PieChart.prototype.update = function(){
 	var data = [];
 
-	for(var i = 0; i < this.m_category_id_list.length; i++){
-		var category_id = this.m_category_id_list[i];
-		var category_name = kakeibo.category_set.getById(category_id).getName();
-		var sum_cell = kakeibo.model.SummaryTable.getCell(this.m_year, this.m_month, category_id);
+	for(var i = 0; i < this.m_categories.length; i++){
+		var sum_cell = this.m_summary_table.getCell(this.m_year, this.m_month, this.m_categories[i].getId());
 		var amount = 0;
 		if(sum_cell != null){
-			amount = sum_cell.getSumAmount();
+			if(this.column_type == "balance"){
+				amount = sum_cell.getBalance();
+			}
+			else{
+				amount = sum_cell.getSumAmount();
+			}
 		}
 		if(amount > 0){
-			data.push([category_name, amount]);
+			data.push([this.m_categories[i].getName(), amount]);
 		}
 	}
 	console.log(data);
@@ -101,11 +103,11 @@ kakeibo.component.chart.DebtorPieChart.prototype.update = function(){
 }
 
 
-kakeibo.component.chart.DebtorPieChart.prototype.setSize = function(width, height){
+kakeibo.component.chart.PieChart.prototype.setSize = function(width, height){
 	this.m_chart.setSize(width, height, false);
 }
 
 
-kakeibo.component.chart.DebtorPieChart.prototype.destroy = function(){
+kakeibo.component.chart.PieChart.prototype.destroy = function(){
 	this.m_chart.destroy();
 }

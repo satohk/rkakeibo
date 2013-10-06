@@ -24,6 +24,7 @@ kakeibo.controller.ListTabController = function(){
 	this.m_search_button_num = 0;
 
 	this.initDetailPanel();
+	this.initDetailPanelTooltip();
 	this.initGrid();
 	this.initKakeiboEntryLists();
 
@@ -104,6 +105,22 @@ kakeibo.controller.ListTabController.prototype.bindKakeiboEntryList2button = fun
 			$("#list-pane-title").html($("#" + e.target.id).html());
 		}
 	});
+}
+
+
+kakeibo.controller.ListTabController.prototype.initDetailPanelTooltip = function(){
+	var option = {
+		trigger: "click",
+		html: "true",
+		placement: "bottom"
+	};
+
+	option.title = $("#list-pane-date-info-title").html();
+	$("#list-pane-date-info").tooltip(option);
+
+	option.title = $("#list-pane-category-info-title").html();
+	$("#list-pane-debtor-info").tooltip(option);
+	$("#list-pane-creditor-info").tooltip(option);
 }
 
 

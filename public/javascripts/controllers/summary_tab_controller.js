@@ -16,7 +16,7 @@ kakeibo.controller.SummaryTabController = function(context){
 	this.m_download_page_size = 12;
 	this.m_chart_num_col = 12;
 	this.initSubpane();
-	//this.initChart();
+	this.initChart();
 	this.initTables();
 	this.initDateSelector();
 
@@ -308,12 +308,43 @@ kakeibo.controller.SummaryTabController.prototype.initChart = function(){
 
 		self.m_chart.destroy();
 
+		// init categories
+		var root = kakeibo.category_set.getRoot();
+		var categories = [];
+		var data_type = $target.attr("data");
+		var column_type;
+
+		if(data_type == "cost"){
+			for(var i = 0; i < root.getNumChildren(); i++){
+				var c = root.getChild(i);
+				if(c.getCategoryType() == kakeibo.model.CategoryType.COST){
+					categories.push(c);
+				}
+			}
+			column_type = "sum_amount";
+		}
+		else if(data_type == "assets"){
+			categories.push(kakeibo.category_set.getAssetsSum());
+			categories.push(kakeibo.category_set.getLiabilitiesSum());
+			categories.push(kakeibo.category_set.getNetAssetsSum());
+			column_type = "balance";
+		}
+		else if(data_type == "income-cost-sum"){
+			categories.push(kakeibo.category_set.getIncomeSum());
+			categories.push(kakeibo.category_set.getCostSum());
+			categories.push(kakeibo.category_set.getNetIncomeSum());
+			column_type = "sum_amount";
+		}
+
 		self.m_chart = new chart_class({
 			title: $target.html(),
 			render_to: "summary-pane-chart",
 			year: self.m_focused_date.year,
 			month: self.m_focused_date.month,
-			num_cols: self.m_chart_num_col
+			num_cols: self.m_chart_num_col,
+			summary_table: kakeibo.model.SummaryTable,
+			categories: categories,
+			column_type: column_type
 		});
 
 		self.updateView();

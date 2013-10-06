@@ -6,8 +6,8 @@
 		  <div id="summary-pane-subpane-selector" class="btn-group" data-toggle="buttons-radio">
 			<!-- <button id="summary-pane-table-button" class="btn" pane-id="summary-pane-table-subpane"><i class="icon-th"></i></button> -->
 			<!-- <button id="summary-pane-chart-button" class="btn" pane-id="summary-pane-chart-subpane"><i class="icon-align-left"></i></button> -->
-			<button type="button" id="summary-pane-pl-table-button" class="btn" pane_id="summary-pane-pl-table-subpane">損益</button>
-			<button type="button" id="summary-pane-bs-table-button" class="btn" pane_id="summary-pane-bs-table-subpane">資産</button>
+			<button type="button" id="summary-pane-pl-table-button" class="btn" pane_id="summary-pane-pl-table-subpane">損益計算</button>
+			<button type="button" id="summary-pane-bs-table-button" class="btn" pane_id="summary-pane-bs-table-subpane">資産累計</button>
 			<button type="button" id="summary-pane-chart-button" class="btn" pane_id="summary-pane-chart-subpane">グラフ</button>
 		  </div>
 		  <div class="pull-right">
@@ -51,9 +51,10 @@
 		<div class="row">
 		  <div class="span2">
 			<ul id="summary-pane-chart-selector" class="nav nav-tabs nav-stacked">
-			  <li><a href="#" chart="DebtorLineChart">支出推移</a></li>
-			  <li><a href="#" chart="DebtorPieChart">支出比率</a></li>
-			  <li><a href="#" chart="CashFlowChart">収支推移</a></li>
+			  <li><a href="#" chart="LineChart" data="cost">支出推移</a></li>
+			  <li><a href="#" chart="PieChart" data="cost">支出比率</a></li>
+			  <li><a href="#" chart="LineChart" data="income-cost-sum">損益推移</a></li>
+			  <li><a href="#" chart="LineChart" data="assets">資産累計</a></li>
 			</ul>
 		  </div>
 		  <div class="span10">

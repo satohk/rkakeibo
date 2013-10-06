@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Rkakeibo</title>
+  <title>家庭の経理</title>
   <%= stylesheet_link_tag "/css/bootstrap/bootstrap.css" %>
   <style type="text/css">
     <!-- body { -->
@@ -24,30 +24,33 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <a class="brand" href="#">家庭の経理</a>
+      <a class="brand" href="#">家庭の経理 β</a>
 	  <% if user_signed_in? -%>
-      <div class="btn-group pull-right">
+	  <form class="navbar-form pull-right">
 		<%= link_to destroy_user_session_path, :class=>"btn btn-inverse" do%>
 		<i class="icon-off icon-white"></i>&nbsp;Log out
 		<% end %>
 
-<!--         <a class="btn dropdown-toggle btn-inverse" data-toggle="dropdown" href="#"> -->
-<!--           <i class="icon-user icon-white"></i> <%= current_user.email %> -->
-<!--           <span class="caret"></span> -->
-<!--         </a> -->
-<!--         <ul class="dropdown-menu"> -->
-<!-- 		  <li class="dropdown-submenu"> -->
-<!-- 			<a href="#">アカウント</a> -->
-<!-- 			<ul class="dropdown-menu"> -->
-<!-- 			  <li><a href="#">メールアドレス変更</a></li> -->
-<!-- 			  <li><a href="#">パスワード変更</a></li> -->
-<!-- 			</ul> -->
-<!-- 		  </li> -->
-<!--           <li> <%= link_to "アカウント管理", edit_user_password_path %> -->
-<!--           <li class="divider"></li> -->
-<!--           <li><%= link_to 'ログアウト', destroy_user_session_path%></li> -->
-<!--         </ul> -->
-      </div>
+		<!--         <a class="btn dropdown-toggle btn-inverse" data-toggle="dropdown" href="#"> -->
+		<!--           <i class="icon-user icon-white"></i> <%= current_user.email %> -->
+		<!--           <span class="caret"></span> -->
+		<!--         </a> -->
+		<!--         <ul class="dropdown-menu"> -->
+		<!-- 		  <li class="dropdown-submenu"> -->
+		<!-- 			<a href="#">アカウント</a> -->
+		<!-- 			<ul class="dropdown-menu"> -->
+		<!-- 			  <li><a href="#">メールアドレス変更</a></li> -->
+		<!-- 			  <li><a href="#">パスワード変更</a></li> -->
+		<!-- 			</ul> -->
+		<!-- 		  </li> -->
+		<!--           <li> <%= link_to "アカウント管理", edit_user_password_path %> -->
+		<!--           <li class="divider"></li> -->
+		<!--           <li><%= link_to 'ログアウト', destroy_user_session_path%></li> -->
+		<!--         </ul> -->
+	  </form>
+	  <div class="pull-right navbar-text">
+		<%= current_user.email %>&nbsp;&nbsp;
+	  </div>
       <ul class="nav">
         <li><a href="#" id="navbar-list-pane-selector" pane_id="list-pane" >記入/一覧</a></li>
         <li><a href="#" id="navbar-summary-pane-selector" pane_id="summary-pane">集計</a></li>
@@ -88,9 +91,8 @@
 <%= javascript_include_tag "/javascripts/components/grid.js" %>
 <%= javascript_include_tag "/javascripts/components/summary_table_view.js" %>
 <%= javascript_include_tag "/javascripts/components/chart/abstract_chart.js" %>
-<%= javascript_include_tag "/javascripts/components/chart/debtor_line_chart.js" %>
-<%= javascript_include_tag "/javascripts/components/chart/debtor_pie_chart.js" %>
-<%= javascript_include_tag "/javascripts/components/chart/cash_flow_chart.js" %>
+<%= javascript_include_tag "/javascripts/components/chart/line_chart.js" %>
+<%= javascript_include_tag "/javascripts/components/chart/pie_chart.js" %>
 <script type='text/javascript'>
   function init(){
   kakeibo.init(<%= @categories_json  %>, <%= @settings_json  %>);

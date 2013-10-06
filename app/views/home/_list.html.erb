@@ -39,17 +39,20 @@
 			  <tr>
 				<td>
 				  <div class="no-margin control-group">
-					<span id="list-pane-input-date-caption" class="help-inline">日付</span><br>
+					<span id="list-pane-input-date-caption" class="help-inline">日付</span>
+					&nbsp;<a id="list-pane-date-info" href="#">?</a><br>
 					<input id="list-pane-input-date" type="text" class="input-small error"></input><br>
 				  </div>
 				<td>
 				  <div class="no-margin control-group">
-					<span id="list-pane-input-debtor-caption" class="help-inline">借り方</span><br>
+					<span id="list-pane-input-debtor-caption" class="help-inline">借り方</span>
+					&nbsp;<a id="list-pane-debtor-info" href="#">?</a><br>
 					<input id="list-pane-input-debtor" type="text" class="input-medium"></input>
 				  </div>
 				<td>
 				  <div class="no-margin control-group">
-					<span id="list-pane-input-creditor-caption" class="help-inline">貸し方</span><br>
+					<span id="list-pane-input-creditor-caption" class="help-inline">貸し方</span>
+					&nbsp;<a id="list-pane-creditor-info" href="#">?</a><br>
 					<input id="list-pane-input-creditor" type="text" class="input-medium"></input>
 				  </div>
 				<td>
@@ -130,3 +133,17 @@
 
 <div id="list-pane-msg-remove" style="display:none"      msg="%d個のエントリーを削除します"> </div>
 <div id="list-pane-msg-input-error" style="display:none" msg="入力エラー"></div>
+<div id="list-pane-date-info-title" style="display:none">
+  <div style="text-align: left">
+	2桁の数字 ： 日<br>
+	4桁の数字 ： 月日<br>
+	8桁の数字 ： 年月日（西暦）<br>
+	※Enterキーで次に移動
+  </div>
+</div>
+<div id="list-pane-category-info-title" style="display:none">
+  <div style="text-align: left">
+	科目コードを入力<br>
+	Enterキーで次に移動
+  </div>
+</div>

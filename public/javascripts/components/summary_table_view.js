@@ -234,7 +234,7 @@ kakeibo.component.SummaryTableView.prototype.initView = function(){
 		
 		$searchable.hover(
 			function(){
-				$(this).css("background-color", "#f5f5f5");
+				$(this).css("background-color", "#e8e8e8");
 			},
 			function(){
 				$(this).css("background-color", "");
@@ -285,6 +285,9 @@ kakeibo.component.SummaryTableView.prototype.update = function(){
 		else if(category_id == category_set.getLiabilitiesSum().getId()){
 			text_color = "text-error"
 		}
+		else if(category_id == category_set.getNetIncomeSum().getId()){
+			text_color = "text-success"
+		}
 		
 		for(var col = 0; col < num_col; col++){
 			var date = kakeibo.utils.calcSummaryColDate(this.m_params.date, -(num_col - 1 - col));
@@ -297,7 +300,8 @@ kakeibo.component.SummaryTableView.prototype.update = function(){
 				cell_html = make_cell(amount, strong, text_color);
 			}
 			$td_list[2 + col].innerHTML = cell_html;
-			
+
+			// —\ŽZ
 			if(col == num_col - 1 && cell != null){
 				var category = category_set.getById(category_id);
 				if(this.m_params.show_budgets){
